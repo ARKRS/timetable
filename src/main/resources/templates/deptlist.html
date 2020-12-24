@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Depts editor</title>
+</head>
+<body>
+
+<h1>List</h1>
+
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>Deptname</th>
+            <th>Supervisor</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr th:each="dept: ${depts}">
+                <th th:text="${dept.deptname}" th:name="${dept.deptname}"></th>
+                <th th:text="${dept.supervisor}"></th>
+            </tr>
+        </tbody>
+    </table>
+    <form action="/depts/add">
+    <label th:name="newdeptnamelabel"><input type="text" name="newdeptname">Name</label>
+        <button type="submit">Add new dept</button>
+    </form>
+</div>
+<span><a href="/hello">Back</a></span>
+</body>
+</html>
