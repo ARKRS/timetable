@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Depts editor</title>
+    <link rel="stylesheet" href="/static/logincss.css">
+    <link rel="stylesheet" href="/static/table.css">
+    <link rel="icon" href="/static/minilogo.png">
 </head>
 <body>
 
@@ -17,16 +20,32 @@
         </tr>
         </thead>
         <tbody>
-            <tr th:each="dept: ${depts}">
-                <th th:text="${dept.deptname}" th:name="${dept.deptname}"></th>
-                <th th:text="${dept.supervisor}"></th>
-            </tr>
+        <tr th:each="dept: ${depts}">
+            <td th:text="${dept.deptname}" th:name="${dept.deptname}"></td>
+            <td th:text="${dept.supervisor.username}"></td>
+        </tr>
         </tbody>
     </table>
-    <form action="/depts/add">
-    <label th:name="newdeptnamelabel"><input type="text" name="newdeptname">Name</label>
+    <form action="/depts/add" method="post">
+        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
+        <div class="row">
+            <div class="left-column"><label th:name="newdeptnamelabel">Name:</label></div>
+            <div class="right-column"><input type="text" name="deptname"></div>
+        </div>
+        <div class="row">
+            <div class="left-column">
+                <label>Supervisor:</label>
+            </div>
+            <div class="right-column">
+                <select name = "selectedSupervisor">
+                    <option disabled selected = "selected" value="Укажите руководителя" name="newsupervisor">Укажите руководителя</option>
+                    <option th:each="user:${users}" th:text="${user.username}" th:value="${user.id}"></option>
+                </select>
+            </div>
+        </div>
         <button type="submit">Add new dept</button>
     </form>
+
 </div>
 <span><a href="/hello">Back</a></span>
 </body>

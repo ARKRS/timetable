@@ -9,7 +9,7 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private String id;
+    private Long id;
 
     private String deptname;
     private Boolean isActive;
@@ -22,7 +22,7 @@ public class Department {
         this.deptname = deptname;
     }
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User supervisor;
 
@@ -42,17 +42,16 @@ public class Department {
         this.supervisor = supervisor;
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Department() {
 
     }
 
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    @Id
-    public String getId() {
-        return id;
-    }
 }

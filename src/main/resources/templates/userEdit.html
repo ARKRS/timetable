@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>User editor</title>
+    <link rel="stylesheet" href="/static/logincss.css">
+    <link rel="stylesheet" href="/static/table.css">
+    <link rel="icon" href="/static/minilogo.png">
 </head>
 <body>
 <form action="/user" method="post">
     <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
+    <!--/*@thymesVar id="username" type="java.lang.String"*/-->
     <input type="text" name="username" th:value="${user.username}" placeholder="_username">
     <input type="hidden" name="userId" th:value="${user.id}" placeholder="_userid">
     <table>

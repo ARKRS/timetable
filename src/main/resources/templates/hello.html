@@ -3,11 +3,15 @@
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
 <head>
     <title>Start page</title>
+    <link rel="stylesheet" href="/static/logincss.css">
+    <link rel="icon" href="/static/minilogo.png">
+
 </head>
 <body>
-<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1>
+<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! today [[${today}]] your department is: [[${department}]]</h1>
 <span><a href="/user">User list</a></span>
 <span><a href="/depts">Depts list</a></span>
+<span><a href="/docs">Document edit</a></span>
 <form th:action="@{/logout}" method="post">
     <input type="submit" value="Sign Out"/>
 </form>

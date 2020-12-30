@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Doc editor</title>
+    <link rel="stylesheet" href="/static/logincss.css">
+    <link rel="stylesheet" href="/static/table.css">
+    <link rel="icon" href="/static/minilogo.png">
+</head>
+<body>
+<h1 >Состояние сотрудников</h1>
+<h2>[[${dapartment_name}]], дата [[${today}]]</h2>
+<form method="post" action="/docs/savedoc">
+    <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
+    <input type="hidden" th:value="${department_id}" name="department_id" placeholder="department_id">
+    <input type="hidden" th:value="${today}" name="today" placeholder="today">
+    <table>
+        <thead>
+        <tr>
+            <td>№</td>
+            <td>ФИО</td>
+            <td>Состояние</td>
+        </tr>
+        </thead>
+        <tbody>
+        <div th:each="emppair, state: ${employees}">
+                <tr  th:each="employee : ${emppair}">
+                    <td th:utext="${state.index+1}">State</td>
+                    <td th:name="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:value="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:utext="${employee.key.fio}">Fio</td>
+                    <td>
+                        <select  th:name="employeeStatus +${#numbers.formatInteger(employee.key.employee_id,3)}">
+                            <option th:each="status : ${T(com.timers.timetable.employees.EmployeeStatus).values()}"
+                                    th:value="${status}" th:text="${status}" th:if="${status==employee.value}"></option>
+                        </select>
+                    </td>
+                </tr>
+        </div>
+        </tbody>
+    </table>
+    <button type="submit">Save document</button>
+</form>
+</body>
+</html>
