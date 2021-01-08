@@ -4,6 +4,7 @@ import com.timers.timetable.repos.UserRepo;
 import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
+@PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/user")
 public class UserController {
 

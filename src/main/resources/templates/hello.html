@@ -1,19 +1,34 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
-    <title>Start page</title>
-    <link rel="stylesheet" href="/static/logincss.css">
-    <link rel="icon" href="/static/minilogo.png">
-
+    <title>Записка по личному составу</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <th:block th:include="common/head.html :: head"></th:block>
 </head>
 <body>
-<h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]! today [[${today}]] your department is: [[${department}]]</h1>
-<span><a href="/user">User list</a></span>
-<span><a href="/depts">Depts list</a></span>
-<span><a href="/docs">Document edit</a></span>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="Sign Out"/>
-</form>
+<div th:insert="~{common/body :: body}"></div>
+<div class="container" name = "body">
+    <div class="row">
+        <div class="col-sm">
+            <p class="h3" th:inline="text">Здравствуйте, [[${#httpServletRequest.remoteUser}]]!</p>
+            <p class="h4">сегодня [[${today}]], ваш отдел: [[${department}]]</p>
+            <nav class="nav flex-column">
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" href="/user">Список пользователей</a>
+                </div>
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <a class="nav-link" href="/depts">Список подразделений</a>
+                </div>
+                <a class="nav-link" href="/docs">Изменение данных сотрудников</a>
+            </nav>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-primary" th:action="@{/logout}" th:method="post">Выход</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>

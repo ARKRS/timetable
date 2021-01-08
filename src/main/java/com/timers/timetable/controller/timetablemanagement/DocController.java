@@ -1,13 +1,14 @@
 package com.timers.timetable.controller.timetablemanagement;
 
 import com.timers.timetable.deptsmanagement.Department;
-import com.timers.timetable.docs.DocumentByDay;
+import com.timers.timetable.docs.DepartmentDoc;
 import com.timers.timetable.employees.Employee;
 import com.timers.timetable.employees.EmployeeStatus;
 import com.timers.timetable.repos.DeptsRepo;
 import com.timers.timetable.repos.DocsRepo;
 import com.timers.timetable.repos.EmployeeRepo;
 import com.timers.timetable.repos.UserRepo;
+import com.timers.timetable.service.DocService;
 import com.timers.timetable.users.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.*;
 import java.util.*;
 
 @Controller
@@ -64,7 +64,7 @@ public class DocController {
 
         List<Employee> employees = employeeRepo.findEmployeesByDepartment_IdOrderByFio(department.getId());
 
-        DocumentByDay curDoc = docsRepo.findByDepartmentAndWorkdate(department,today);
+        DepartmentDoc curDoc = docsRepo.findByDepartmentAndWorkdate(department,today);
 
         List<Map<Employee, EmployeeStatus>> mapList = new ArrayList<Map<Employee,EmployeeStatus>>();
         for ( Employee emp: employees
@@ -79,6 +79,10 @@ public class DocController {
                 else {
                     map1.put(emp,EmployeeStatus.UNDEF);
                 }
+
+            }
+            else {
+                map1.put(emp,EmployeeStatus.UNDEF);
             }
 
 
@@ -95,8 +99,16 @@ public class DocController {
         return "/doceditor";
     }
 
+     @GetMapping("/getdocs")
+    public String getDocs(){
+
+        String str = new DocService().getDocs(docsRepo);
+
+        return str;
+    }
+
     @PostMapping("/savedoc")
-    public String saveDoc(@RequestParam Map<String,String> form){
+    public String saveDoc(@RequestParam Map<String,String> form) {
 
         Optional departmentOptional = deptsRepo.findById(Long.parseLong(form.get("department_id")));
 
@@ -109,10 +121,11 @@ public class DocController {
         }
 
         Department department = (Department) departmentOptional.get();
-        DocumentByDay curDoc = docsRepo.findByDepartmentAndWorkdate((Department) departmentOptional.get(),workdate);
+        DepartmentDoc curDoc = docsRepo.findByDepartmentAndWorkdate((Department) departmentOptional.get(),workdate);
 
         if (curDoc==null){
-            curDoc = new DocumentByDay();
+            curDoc = new DepartmentDoc();
+            curDoc.setDocUploaded(false);
             curDoc.setDepartment(department);
             curDoc.setWorkdate(workdate);
         }
@@ -135,6 +148,8 @@ public class DocController {
         curDoc.setEmployees(employeeStatusMap);
         docsRepo.save(curDoc);
 
-        return "/hello";
+        //model = ParameterFiller.fillModelParameters(model,userRepo,deptsRepo);
+
+        return "redirect:/gotohello";
     }
 }

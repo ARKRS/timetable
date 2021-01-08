@@ -1,10 +1,14 @@
 package com.timers.timetable.controller.usermanagement;
 
+import com.timers.timetable.TimetableApplication;
+import com.timers.timetable.repos.DeptsRepo;
 import com.timers.timetable.repos.UserRepo;
+import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -16,6 +20,8 @@ public class RegistrationController {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private DeptsRepo deptsRepo;
 
     @GetMapping("/registration")
     public String registration(){
@@ -35,6 +41,12 @@ public class RegistrationController {
         user.setRoles(Collections.singleton(Role.USER));
         userRepo.save(user);
         return "redirect:/login";
+    }
+    @GetMapping("/hello")
+    public String hello(Model model){
+
+        model = ParameterFiller.fillModelParameters(model,userRepo,deptsRepo);
+        return "/hello";
     }
 
 }

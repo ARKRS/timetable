@@ -1,17 +1,23 @@
 package com.timers.timetable.employees;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.timers.timetable.deptsmanagement.Department;
 
 import javax.persistence.*;
 
 @Entity
+@JsonAutoDetect
 public class Employee {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long employee_id;
 
+
     private String fio;
+
     private String extCode;
 
 //    @ManyToOne(fetch = FetchType.EAGER)
@@ -19,6 +25,7 @@ public class Employee {
     @ManyToOne(fetch = FetchType.EAGER)
     //TODO переименовать колонку в department_id
     @JoinColumn(name = "id", referencedColumnName = "id")
+    @JsonIgnore
     private Department department;
 
 

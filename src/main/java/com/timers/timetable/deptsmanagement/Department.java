@@ -1,5 +1,6 @@
 package com.timers.timetable.deptsmanagement;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.timers.timetable.users.User;
 
 import javax.persistence.*;
@@ -9,6 +10,7 @@ public class Department {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+
     private Long id;
 
     private String deptname;
@@ -24,6 +26,7 @@ public class Department {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User supervisor;
 
     public Boolean getActive() {

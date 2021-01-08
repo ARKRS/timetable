@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Depts editor</title>
-    <link rel="stylesheet" href="/static/logincss.css">
-    <link rel="stylesheet" href="/static/table.css">
-    <link rel="icon" href="/static/minilogo.png">
+    <div th:insert="~{common/head :: head}"></div>
 </head>
 <body>
-
-<h1>List</h1>
+<div th:insert="~{common/body :: body}"></div>
+<h3>Список отделов</h3>
 
 <div>
-    <table>
+    <table class="container-table">
         <thead>
         <tr>
-            <th>Deptname</th>
-            <th>Supervisor</th>
+            <td>Deptname</td>
+            <td>Supervisor</td>
         </tr>
         </thead>
         <tbody>
@@ -47,6 +45,6 @@
     </form>
 
 </div>
-<span><a href="/hello">Back</a></span>
+<span><a href="/gotohello">Back</a></span>
 </body>
 </html>

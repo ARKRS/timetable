@@ -2,19 +2,19 @@
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>User List</title>
-    <link rel="stylesheet" href="/static/logincss.css">
-    <link rel="stylesheet" href="/static/table.css">
-    <link rel="icon" href="/static/minilogo.png">
+    <title>Список пользователей</title>
+    <th:block th:include = "common/head.html :: head"></th:block>
+
 </head>
 <body>
-
-<table>
+<div th:insert="~{common/body :: body}"></div>
+<table class="container-table" th:name="main_table">
+    <h3>Список пользователей</h3>
     <thead>
         <tr>
-            <th>Name</th>
-            <th>Roles</th>
-            <th></th>
+            <td>Name</td>
+            <td>Roles</td>
+            <td></td>
         </tr>
     </thead>
     <tbody>

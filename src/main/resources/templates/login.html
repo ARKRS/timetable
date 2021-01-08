@@ -1,12 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>login form</title>
+    <title>Страница входа</title>
+    <th:block th:include = "common/head.html :: head"></th:block>
     <link rel="stylesheet" href="/static/logincss.css">
-    <link rel="icon" href="/static/minilogo.png">
+<!--    <link rel="icon" href="/static/minilogo.png">-->
 </head>
 <body>
+<div class="container" sec:authorize="isAuthenticated()">
+    authorize - authenticated
+</div>
+
+<div class="container" sec:authorize="!isAuthenticated()">
+    authorize - not authenticated
+</div>
+
+<div th:insert="~{common/body :: body}"></div>
 <div class="login-page">
     <div th:if="${param.error}">
         Invalid username and password.
