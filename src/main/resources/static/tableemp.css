@@ -1,0 +1,30 @@
+
+table {border-collapse: separate; border-spacing: 4px;}
+table thead tr {color: #ffffff; font-weight: bold;}
+table thead tr td {border-radius: 4px 4px 0 0; background: #52793c; border: 1px solid #2E3E2B}
+table tbody tr td {border: 1px solid #3d582d; border-radius: 4px; background: #a4c386;}
+table tbody tr td:hover {background: #52793C; transition-duration: 0.2s;}
+
+select {background: #a4c386; padding: inherit; font-family: "Roboto", sans-serif;}
+select:hover{background: #52793C;}
+
+.container-table{
+
+    background: #cfeccf;
+    /*width: 540px;*/
+    align-content: center;
+}
+
+.container-button {
+    font-family: "Roboto", sans-serif;
+    text-transform: uppercase;
+    outline: 0;
+    background: #52793c;
+    /*background: hover;*/
+    width: inherit;
+    border: 1px solid #3d582d;
+    border-radius: 4px;
+    padding: 15px;
+    color: #FFFFFF;
+    font-size: 14px;
+}
