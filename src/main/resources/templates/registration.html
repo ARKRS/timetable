@@ -1,24 +1,33 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<html lang="en" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация нового пользователя</title>
+    <title>Регистрация аккаунта</title>
+    <th:block th:include = "common/head.html :: head"></th:block>
     <link rel="stylesheet" href="/static/logincss.css">
-    <link rel="icon" href="/static/minilogo.png">
 </head>
 <body>
+<div th:insert="~{common/body :: body}"></div>
+<p>
+
+</p>
 <div class="login-page">
-    <div th:if="${errorUserExists}">
-        User exists!
+    <div th:if="${param.error}">
+        Invalid username and password.
+    </div>
+    <div th:if="${param.logout}">
+        You have been logged out.
     </div>
     <div class="form">
-        <form class="login-form" th:action="@{/registration}" method="post">
-            <p class="message">Create an account</p>
-            <input type="text" name="username" placeholder="username"/>
+        <p class="bigmessage">Регистрация нового пользователя</p>
+        <form class="login-form"  name="reg" th:action="@{/registration}" method="post">
+            <input type="text" name="username" placeholder="Введите логин"/>
+            <input type="email" name="email" placeholder="Введите email"/>
             <input type="password" name = "password" placeholder="password"/>
-            <button>Create account</button>
+            <button class="buttonlogin">создать аккаунт</button>
         </form>
-        <p class="message">Already registered? <a th:href="@{/login}">Login</a></p>
+        <p class="message">Уже регистрировались? <a th:href="@{/login}">Войти</a></p>
     </div>
 </div>
 </body>

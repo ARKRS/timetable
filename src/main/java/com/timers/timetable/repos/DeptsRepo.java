@@ -10,4 +10,6 @@ public interface DeptsRepo extends CrudRepository<Department,Long> {
 
     Department findBySupervisor(User supervisor);
 
+    Department findByExtCodeAndDeptname(String extcode, String deptname);
+
 }

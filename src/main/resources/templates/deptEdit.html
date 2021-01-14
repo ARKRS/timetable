@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Редактирование подразделения</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <th:block th:include="common/head.html :: head"></th:block>
+</head>
+<body>
+<div th:insert="~{common/body :: body}"></div>
+<form method="post">
+    <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
+    <!--/*@thymesVar id="username" type="java.lang.String"*/-->
+    <input type="hidden" name="deptId" th:value="${dept.id}" placeholder="_deptid">
+    <h3>Редактирование подразделения</h3>
+    <table>
+        <td>
+            <label>Наименование: </label><input type="text" name="deptname" th:value="${dept.deptname}" placeholder="Название подразделения">
+        </td>
+        <td>
+            <select name = "selectedSupervisor">
+                <option disabled selected = "selected" value="Укажите ответственного" name="newsupervisor">Укажите руководителя</option>
+                <option th:each="user:${users}" th:text="${user.username}" th:value="${user.id}"></option>
+            </select>
+        </td>
+    </table>
+    <button formaction="/depts/add">Добавить нового</button>
+</form>
+</body>
+</html>

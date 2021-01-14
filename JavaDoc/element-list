@@ -1,0 +1,12 @@
+com.timers.timetable
+com.timers.timetable.controller
+com.timers.timetable.controller.deptmanagement
+com.timers.timetable.controller.timetablemanagement
+com.timers.timetable.controller.usermanagement
+com.timers.timetable.deptsmanagement
+com.timers.timetable.docs
+com.timers.timetable.employees
+com.timers.timetable.repos
+com.timers.timetable.service
+com.timers.timetable.statics
+com.timers.timetable.users

@@ -16,8 +16,9 @@ public class DepartmentDocAdapter implements JsonSerializer<DepartmentDoc> {
 
         JsonObject result = new JsonObject();
 
-        result.addProperty("workdate", new SimpleDateFormat("dd.mm.yyy").format(departmentDoc.getWorkdate()));
+        result.addProperty("workdate", new SimpleDateFormat("dd.MM.yyy").format(departmentDoc.getWorkdate()));
         result.addProperty("department", departmentDoc.getDepartment().getDeptname());
+        result.addProperty("UUID",departmentDoc.getDoc_UUID());
 
         JsonArray employeesjs = new JsonArray();
 

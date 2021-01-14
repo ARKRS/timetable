@@ -2,7 +2,7 @@ package com.timers.timetable.statics;
 
 import com.timers.timetable.deptsmanagement.Department;
 import com.timers.timetable.repos.DeptsRepo;
-import com.timers.timetable.repos.UserRepo;
+import com.timers.timetable.service.UserService;
 import com.timers.timetable.users.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +14,7 @@ import java.util.Calendar;
 
 public class ParameterFiller {
 
-    public static Model fillModelParameters(Model model, UserRepo userRepo, DeptsRepo deptsRepo) {
+    public static void fillModelParameters(Model model, UserService userService, DeptsRepo deptsRepo) {
         //TODO переделать это! Нужно department при авторизации получить
         Authentication auth =  SecurityContextHolder.getContext().getAuthentication();
 //        if (auth==null)
@@ -28,20 +28,19 @@ public class ParameterFiller {
         } else {
             username = obj.toString();
         }
-        User curUser = userRepo.findByUsername(username);
+        User curUser = userService.getUserByUsername(username);
 
         model.addAttribute("userAuthorized",curUser!=null);
 
         Department department = deptsRepo.findBySupervisor(curUser);
 
         if(department == null)
-            model.addAttribute("department",username);
+            model.addAttribute("department",null);
         else
 
             model.addAttribute("department",department.getDeptname());
 
         model.addAttribute("today",new SimpleDateFormat("dd.MM.yyy").format(Calendar.getInstance().getTime()));
 
-        return model;
     }
 }

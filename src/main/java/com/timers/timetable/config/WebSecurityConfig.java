@@ -1,8 +1,9 @@
-package com.timers.timetable.controller;
+package com.timers.timetable.config;
 
 import com.timers.timetable.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -22,27 +23,33 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-//        web.
-//                ignoring()
-//                .antMatchers("/");
+        web
+                .ignoring()
+                .antMatchers("/api/**");
+
     }
 
-
+    @Override
+    public void setTrustResolver(AuthenticationTrustResolver trustResolver) {
+        super.setTrustResolver(trustResolver);
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                    .antMatchers("/", "/login","/static/**").permitAll()
-                    .antMatchers("/registration", "/registration").permitAll()
-                    .anyRequest().authenticated()
+                .antMatchers("/", "/login","/static/**").permitAll()
+                .antMatchers("/registration", "/registration","/activate/*").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                    .formLogin()
-                    .loginPage("/login")
-                    .permitAll()
+                .formLogin()
+                .loginPage("/login")
+                .permitAll()
                 .and()
-                    .logout()
-                    .permitAll();
+                .logout()
+                .permitAll();
+
+
 
     }
 
@@ -52,7 +59,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .dataSource(dataSource)
 
  */
-               auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+        auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+
+        //auth.inMemoryAuthentication().withUser("RA").password("449175").authorities("ADMIN");
+
 /*                .usersByUsernameQuery("select username, password, active from usr where username=?")
                 .authoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id = ur.user_id where u.username=?");
 

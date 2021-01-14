@@ -15,4 +15,5 @@ public interface EmployeeRepo extends CrudRepository<Employee,Long> {
 
     List<Employee> findAllByDepartment(Department department);
 
+    Employee findByExtCodeAndFio(String extCode, String fio);
 }

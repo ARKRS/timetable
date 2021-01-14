@@ -7,6 +7,7 @@ import com.timers.timetable.docs.DepartmentDocAdapter;
 import com.timers.timetable.repos.DocsRepo;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -16,28 +17,30 @@ public class DocService {
 
      public String getDocs(DocsRepo docsRepo){
 
+        GsonBuilder gsonBuilder = new GsonBuilder()
+           .setPrettyPrinting()
+           .registerTypeAdapter(DepartmentDoc.class,new DepartmentDocAdapter());
 
-        Gson gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(DepartmentDoc.class,new DepartmentDocAdapter())
+        Gson gson = gsonBuilder
                 .create();
 
+         List<String>result = new ArrayList<>();
 
         Date date = getDateMinusMonth();
+
         List<DepartmentDoc> docList = docsRepo.findAllByDocUploaded(false);
+
         if (docList.size()>0){
 
         }
-         String jsonstring = "";
+
         for (DepartmentDoc doc: docList
         ) {
 
-            jsonstring = jsonstring + gson.toJson(doc);
-            //System.out.println(jsonstring);
-
+            result.add(gson.toJson(doc));
         }
 
-        return jsonstring;
+        return gson.toJson(result);
 
     }
 

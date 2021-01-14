@@ -1,6 +1,7 @@
 package com.timers.timetable.controller.usermanagement;
 
 import com.timers.timetable.repos.UserRepo;
+import com.timers.timetable.service.UserService;
 import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -42,29 +40,47 @@ public class UserController {
         return "userEdit";
     }
 
-    @PostMapping// ("saveUser")
+    @PostMapping("/adduser")
+    public String addUser(@RequestParam String username,
+                          @RequestParam Map<String,String> form){
+
+        User newuser = new User();
+        newuser.setRoles(new HashSet<>());
+
+        return updateUser(username,newuser,form);
+    }
+
+   private String updateUser(String username, User user, Map<String,String> form){
+
+       user.setUsername(username);
+
+       Set<String> roles = Arrays.stream(Role.values())
+               .map(Role::name)
+               .collect(Collectors.toSet());
+
+       user.getRoles().clear();
+
+       user.setActive(form.get("active")==null? false:true);
+
+
+       for (String key : form.keySet()) {
+
+           if(roles.contains(key)){
+               user.getRoles().add(Role.valueOf(key));
+           }
+       }
+
+       userRepo.save(user);
+
+       return "redirect:/user";
+
+   }
+    @PostMapping("saveuser")
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String,String> form,
             @RequestParam("userId") User user){
 
-        user.setUsername(username);
-
-        Set<String> roles = Arrays.stream(Role.values())
-                   .map(Role::name)
-                   .collect(Collectors.toSet());
-
-        user.getRoles().clear();
-
-        for (String key : form.keySet()) {
-
-            if(roles.contains(key)){
-                user.getRoles().add(Role.valueOf(key));
-            }
-        }
-
-        userRepo.save(user);
-
-        return "redirect:/user";
+        return updateUser(username,user,form);
     }
 }

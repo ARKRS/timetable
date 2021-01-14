@@ -15,14 +15,8 @@ public class Department {
 
     private String deptname;
     private Boolean isActive;
+    private String extCode;
 
-    public String getDeptname() {
-        return deptname;
-    }
-
-    public void setDeptname(String deptname) {
-        this.deptname = deptname;
-    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -51,6 +45,22 @@ public class Department {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getExtCode() {
+        return extCode;
+    }
+
+    public void setExtCode(String extCode) {
+        this.extCode = extCode;
+    }
+
+    public String getDeptname() {
+        return deptname;
+    }
+
+    public void setDeptname(String deptname) {
+        this.deptname = deptname;
     }
 
     public Department() {

@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Entity
 public class DepartmentDoc {
@@ -21,6 +22,7 @@ public class DepartmentDoc {
     private Department department;
     private Date workdate;
     private Boolean docUploaded;
+    private String doc_UUID;
 
 
     @ElementCollection
@@ -69,4 +71,11 @@ public class DepartmentDoc {
         this.employees = employees;
     }
 
+    public String getDoc_UUID() {
+        return doc_UUID;
+    }
+
+    public void setDoc_UUID(String doc_UUID) {
+        this.doc_UUID = doc_UUID;
+    }
 }

@@ -53,12 +53,14 @@ public class Employee {
         this.employee_id = employee_id;
     }
 
-//    public Department getDepartment() {
-//        return department;
-//    }
-//
-//    public void setDepartment(Department department) {
-//        this.department = department;
-//    }
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
+
 
 }

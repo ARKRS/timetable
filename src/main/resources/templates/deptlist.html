@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Depts editor</title>
     <div th:insert="~{common/head :: head}"></div>
+    <link rel="stylesheet" href="/static/tableemp.css">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
@@ -15,15 +16,23 @@
         <tr>
             <td>Deptname</td>
             <td>Supervisor</td>
+            <td></td>
         </tr>
         </thead>
         <tbody>
         <tr th:each="dept: ${depts}">
             <td th:text="${dept.deptname}" th:name="${dept.deptname}"></td>
-            <td th:text="${dept.supervisor.username}"></td>
+            <div th:if = "${dept.supervisor != null}">
+                <td th:text="${dept.supervisor.username}"></td>
+            </div>
+            <div th:unless="${dept.supervisor != null}">
+                <td th:text="null"></td>
+            </div>
+            <td><a th:href="@{'/depts/' +${dept.id}}">edit</a></td>
         </tr>
         </tbody>
     </table>
+<!--
     <form action="/depts/add" method="post">
         <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
         <div class="row">
@@ -43,6 +52,7 @@
         </div>
         <button type="submit">Add new dept</button>
     </form>
+-->
 
 </div>
 <span><a href="/gotohello">Back</a></span>

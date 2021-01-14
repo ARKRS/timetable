@@ -6,32 +6,38 @@
     <title>Страница входа</title>
     <th:block th:include = "common/head.html :: head"></th:block>
     <link rel="stylesheet" href="/static/logincss.css">
-<!--    <link rel="icon" href="/static/minilogo.png">-->
 </head>
 <body>
-<div class="container" sec:authorize="isAuthenticated()">
-    authorize - authenticated
-</div>
-
-<div class="container" sec:authorize="!isAuthenticated()">
-    authorize - not authenticated
-</div>
-
 <div th:insert="~{common/body :: body}"></div>
 <div class="login-page">
-    <div th:if="${param.error}">
-        Invalid username and password.
-    </div>
-    <div th:if="${param.logout}">
-        You have been logged out.
-    </div>
+
+    <p></p>
     <div class="form">
+        <div th:if="${param.error}">
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                Некорректное имя пользователя или пароль.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <div th:if="${param.logout}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                Вы вышли из системы.
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <div th:if="${message!=null}">
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <p th:text="${message}">message</p>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+        <p class="bigmessage">Введите учетные данные</p>
         <form class="login-form" th:action="@{/login}" method="post">
             <input type="text" name="username" placeholder="username"/>
             <input type="password" name = "password" placeholder="password"/>
-            <button>login</button>
+            <button class="buttonlogin">войти</button>
         </form>
-        <p class="message">Not registered? <a th:href="@{/registration}">Create an account</a></p>
+        <p class="message">Не зарегистрированы? <a th:href="@{/registration}">Создать аккаунт</a></p>
     </div>
 </div>
 </body>

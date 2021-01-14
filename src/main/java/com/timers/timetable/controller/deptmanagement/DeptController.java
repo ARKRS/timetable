@@ -3,15 +3,13 @@ package com.timers.timetable.controller.deptmanagement;
 import com.timers.timetable.deptsmanagement.Department;
 import com.timers.timetable.repos.DeptsRepo;
 import com.timers.timetable.repos.UserRepo;
+import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -31,10 +29,17 @@ public class DeptController {
 
         return "deptlist";
     }
+    @GetMapping("{dept}")
+    public String userEditForm(@PathVariable Department dept, Model model){
 
+        model.addAttribute("dept",dept);
+        model.addAttribute("users",userRepo.findAll());
+        return "deptEdit";
+    }
     @PostMapping(value = "/add")
     public String addDept(@RequestParam String deptname,
-                          @RequestParam ("selectedSupervisor") User user
+                          @RequestParam ("selectedSupervisor") User user,
+                          Model model
     ){
 
         Department department = deptsRepo.findByDeptname(deptname);
@@ -46,6 +51,6 @@ public class DeptController {
 
         deptsRepo.save(department);
 
-        return "deptlist";
+        return "redirect:/depts";
     }
 }

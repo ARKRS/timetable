@@ -17,10 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,7 +50,7 @@ public class DocController {
         } else {
             username = obj.toString();
         }
-        User curUser = userRepo.findByUsername(username);
+        User curUser = userRepo.findByUsernameAndActive(username,true);
 
         //Date today = Date.from(LocalDate.ofInstant(Instant.now(), ZoneId.systemDefault()).atStartOfDay().toInstant(ZoneOffset.UTC));
 
@@ -61,6 +58,11 @@ public class DocController {
         Date today = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
 
         Department department = deptsRepo.findBySupervisor(curUser);
+
+        if(department==null){
+
+            return "redirect:/gotohello";
+        }
 
         List<Employee> employees = employeeRepo.findEmployeesByDepartment_IdOrderByFio(department.getId());
 
@@ -99,13 +101,6 @@ public class DocController {
         return "/doceditor";
     }
 
-     @GetMapping("/getdocs")
-    public String getDocs(){
-
-        String str = new DocService().getDocs(docsRepo);
-
-        return str;
-    }
 
     @PostMapping("/savedoc")
     public String saveDoc(@RequestParam Map<String,String> form) {
@@ -128,6 +123,12 @@ public class DocController {
             curDoc.setDocUploaded(false);
             curDoc.setDepartment(department);
             curDoc.setWorkdate(workdate);
+            curDoc.setDoc_UUID(UUID.randomUUID().toString());
+        }
+        else {
+            if (curDoc.getDoc_UUID()==null){
+                curDoc.setDoc_UUID(UUID.randomUUID().toString());
+            }
         }
 
         Map<Employee,EmployeeStatus> employeeStatusMap = new HashMap<>();
