@@ -5,56 +5,46 @@
     <title>Depts editor</title>
     <div th:insert="~{common/head :: head}"></div>
     <link rel="stylesheet" href="/static/tableemp.css">
+    <link rel="stylesheet" href="/static/logincss2.css">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
-<h3>Список отделов</h3>
+<p>
 
-<div>
-    <table class="container-table">
-        <thead>
-        <tr>
-            <td>Deptname</td>
-            <td>Supervisor</td>
-            <td></td>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="dept: ${depts}">
-            <td th:text="${dept.deptname}" th:name="${dept.deptname}"></td>
-            <div th:if = "${dept.supervisor != null}">
-                <td th:text="${dept.supervisor.username}"></td>
-            </div>
-            <div th:unless="${dept.supervisor != null}">
-                <td th:text="null"></td>
-            </div>
-            <td><a th:href="@{'/depts/' +${dept.id}}">edit</a></td>
-        </tr>
-        </tbody>
-    </table>
-<!--
-    <form action="/depts/add" method="post">
-        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
-        <div class="row">
-            <div class="left-column"><label th:name="newdeptnamelabel">Name:</label></div>
-            <div class="right-column"><input type="text" name="deptname"></div>
-        </div>
-        <div class="row">
-            <div class="left-column">
-                <label>Supervisor:</label>
-            </div>
-            <div class="right-column">
-                <select name = "selectedSupervisor">
-                    <option disabled selected = "selected" value="Укажите руководителя" name="newsupervisor">Укажите руководителя</option>
-                    <option th:each="user:${users}" th:text="${user.username}" th:value="${user.id}"></option>
-                </select>
-            </div>
-        </div>
-        <button type="submit">Add new dept</button>
+</p>
+
+<div class="form">
+    <form class="login-form"  action="/hello" method="get">
+        <form class="register-form">
+            <p class="bigmessage h2">Список отделов</p>
+
+            <table class="container-table">
+                <thead>
+                <tr>
+                    <td>Название</td>
+                    <td>Ответственный</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dept: ${depts}">
+                    <td th:text="${dept.deptname}" th:name="${dept.deptname}"></td>
+                    <div th:if = "${dept.supervisor != null}">
+                        <td th:text="${dept.supervisor.username}"></td>
+                    </div>
+                    <div th:unless="${dept.supervisor != null}">
+                        <td th:text="null"></td>
+                    </div>
+                    <td><a th:href="@{'/depts/' +${dept.id}}">edit</a></td>
+                </tr>
+                </tbody>
+            </table>
+            <p>
+            </p>
+            <button class="buttonlogin" type="submit" style="width: 650px; border-radius: 4px 4px 0 0; border: 1px solid #2E3E2B">Вернуться назад</button>
+        </form>
     </form>
--->
-
 </div>
-<span><a href="/gotohello">Back</a></span>
+<!--<span><a href="/gotohello">Back</a></span>-->
 </body>
 </html>

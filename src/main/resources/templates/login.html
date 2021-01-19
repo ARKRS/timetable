@@ -31,13 +31,15 @@
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
             </div>
         </div>
-        <p class="bigmessage">Введите учетные данные</p>
+
+    <p class="bigmessage">Введите учетные данные</p>
         <form class="login-form" th:action="@{/login}" method="post">
             <input type="text" name="username" placeholder="username"/>
             <input type="password" name = "password" placeholder="password"/>
             <button class="buttonlogin">войти</button>
         </form>
         <p class="message">Не зарегистрированы? <a th:href="@{/registration}">Создать аккаунт</a></p>
+        <p class="message">Забыли пароль? <a th:href="@{/restore}">Восстановить</a></p>
     </div>
 </div>
 </body>

@@ -6,62 +6,36 @@
 <head>
     <title>Записка по личному составу</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="/static/logincss.css">
     <th:block th:include="common/head.html :: head"></th:block>
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
-<div class="container" name = "body">
-    <div class="row">
-        <div class="col-sm">
-<!--            <script>-->
-<!--                debugger;-->
-<!--            </script>-->
-            <p class="h3" th:inline="text">Здравствуйте, [[${#httpServletRequest.remoteUser}]]!</p>
-            <p class="h4">сегодня [[${today}]], ваш отдел: [[${department}]]</p>
-
-            <nav class="nav flex-column">
-                <div sec:authorize="hasAuthority('ADMIN')">
-                    <a class="nav-link" href="/user">Список пользователей</a>
-                </div>
-                <div sec:authorize="hasAuthority('ADMIN')">
-                    <a class="nav-link" href="/depts">Список подразделений</a>
-                </div>
-
-                    <div th:if ="${department==null}">
-                        <a class="nav-link" href="/hello" data-create = "doclink">Вам не назначено подразделение.</a>
-                    </div>
-                    <div th:unless="${department==null}">
-                        <a class="nav-link" href="/docs" data-create = "doclink">Изменение данных сотрудников</a>
-                    </div>
-
-            </nav>
-            <form th:action="@{/logout}" method="post">
-                <button type="submit" class="btn btn-primary" th:action="@{/logout}" th:method="post">Выход</button>
-            </form>
+<p></p>
+<div class="form">
+    <form class="login-form" th:action="@{/logout}" method="post">
+        <p class="bigmessage h2" th:inline="text">Здравствуйте, [[${#httpServletRequest.remoteUser}]]!</p>
+        <p class="bigmessage">сегодня [[${today}]], ваш отдел: [[${department}]]</p>
+        <div sec:authorize="hasAuthority('ADMIN')">
+            <p class="message_15px">Пользователи: <a href="/user">изменить</a></p>
         </div>
-    </div>
+        <div sec:authorize="hasAuthority('ADMIN')">
+            <p class="message_15px">Подразделения: <a href="/depts">изменить</a></p>
+        </div>
+        <div th:if ="${department==null}">
+            <p class="message_15px">Вам не назначено подразделение. <a href="/hello">Выйти</a></p>
+            <!--                <a class ="nav-link" href="/hello" data-create = "doclink">Вам не назначено подразделение.</a>-->
+        </div>
+        <div th:unless="${department==null}">
+            <p class="message_15px">Данные сотрудников <a href="/docs">изменить</a></p>
+            <!--                <a class="nav-link" href="/docs" data-create = "doclink">Изменение данных сотрудников</a>-->
+        </div>
+        <p>
+
+        </p>
+        <button class="buttonlogin" type="submit">Выход</button>
+    </form>
 </div>
-<!--<script>-->
-<!--    // добавляем в DOM контейнер для сообщений-->
-<!--    if (!document.querySelector('.messages')) {-->
-<!--        const container = document.createElement('div');-->
-<!--        container.classList.add('messages');-->
-<!--        container.style.cssText = 'position: fixed; top: 15px; right: 15px; width: 250px;';-->
-<!--        document.body.appendChild(container);-->
-<!--    }-->
 
-<!--    // получаем контейнер-->
-<!--    const messages = document.querySelector('.messages');-->
-
-<!--    // при нажатию на кнопку добавляем в контейнер alert-->
-<!--    document.querySelector('[data-create="doclink"]').addEventListener('click', () => {-->
-<!--        //debugger;-->
-<!--        const messageText = 'Вам не назначено подразделение';-->
-<!--        const message = document.createElement('div');-->
-<!--        message.className = 'alert alert-primary alert-dismissible fade show';-->
-<!--        message.innerHTML = `${messageText}<button type="button" class="close" data-dismiss="alert">×</button>`;-->
-<!--        messages.appendChild(message);-->
-<!--    });-->
-<!--</script>-->
 </body>
 </html>

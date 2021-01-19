@@ -7,53 +7,64 @@
     <th:block th:include = "common/head.html :: head"></th:block>
     <!--    <div th:include="~{common/head.html :: head}"></div>-->
     <link rel="stylesheet" href="/static/tableemp.css">
+    <link rel="stylesheet" href="/static/logincss2.css">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
-<h1 >Состояние сотрудников</h1>
-<h2>[[${dapartment_name}]], дата [[${today}]]</h2>
+<p>
 
-<form method="post" background="#FFFFFF">
-    <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
-    <input type="hidden" th:value="${department_id}" name="department_id" placeholder="department_id">
-    <input type="hidden" th:value="${today}" name="today" placeholder="today">
-    <form class="register-form">
-        <table class="container-table" th:name="main_table">
-            <thead>
-            <tr>
-                <td>№</td>
-                <td>ФИО</td>
-                <td>Состояние</td>
-            </tr>
-            </thead>
-            <tbody>
-            <div th:each="emppair, state: ${employees}">
-                <tr  th:each="employee : ${emppair}">
-                    <td th:utext="${state.index+1}">State</td>
-                    <td th:name="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:value="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:utext="${employee.key.fio}">Fio</td>
-                    <td>
-                        <select  th:name="employeeStatus +${#numbers.formatInteger(employee.key.employee_id,3)}">
-                            <div th:each="status : ${T(com.timers.timetable.employees.EmployeeStatus).values()}">
-                                <div th:if="${status==employee.value}">
-                                    <option  th:value="${status}" th:text="${status}" th:selected="${status}"></option>
-                                </div>
-                                <div th:unless="${status==employee.value}">
-                                    <option  th:value="${status}" th:text="${status}"></option>
-                                </div>
-                            </div>
-                        </select>
-                    </td>
+</p>
+<div class="form">
+    <p class="bigmessage h2" >Состояние сотрудников: [[${dapartment_name}]], дата [[${today}]]</p>
+    <form class="login-form" method="post" background="#FFFFFF">
+        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
+        <input type="hidden" th:value="${department_id}" name="department_id" placeholder="department_id">
+        <input type="hidden" th:value="${today}" name="today" placeholder="today">
+        <form class="register-form">
+            <table class="container-table" th:name="main_table">
+                <thead>
+                <tr>
+                    <td>№</td>
+                    <td>ФИО</td>
+                    <td>Состояние</td>
                 </tr>
-            </div>
-            </tbody>
-        </table>
-        <span>
-            <button class="container-button" type="submit" formaction="/gotohello" >Вернуться назад</button>
-        </span>
-        <span>
-            <button class="container-button" type="submit" formaction="/docs/savedoc">Сохранить данные</button>
-        </span>
+                </thead>
+                <tbody>
+                <div th:each="emppair, state: ${employees}">
+                    <tr  th:each="employee : ${emppair}">
+                        <td th:utext="${state.index+1}">State</td>
+                        <td th:name="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:value="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:utext="${employee.key.fio}">Fio</td>
+                        <td>
+                            <select  th:name="employeeStatus +${#numbers.formatInteger(employee.key.employee_id,3)}">
+                                <div th:each="status : ${T(com.timers.timetable.employees.EmployeeStatus).values()}">
+                                    <div th:if="${status==employee.value}">
+                                        <option  th:value="${status}" th:text="${status}" th:selected="${status}"></option>
+                                    </div>
+                                    <div th:unless="${status==employee.value}">
+                                        <option  th:value="${status}" th:text="${status}"></option>
+                                    </div>
+                                </div>
+                            </select>
+                        </td>
+                    </tr>
+                </div>
+                </tbody>
+            </table>
+
+            <table class="container-table">
+                <tr>
+            <td>
+                <button class="buttonlogin" type="submit" formaction="/gotohello" >Вернуться назад</button>
+            </td>
+
+            <td>
+                <button class="buttonlogin" type="submit" formaction="/docs/savedoc">Сохранить данные</button>
+            </td>
+                </tr>
+            </table>
+
+        </form>
     </form>
-</form>
+</div>
 </body>
 </html>

@@ -69,16 +69,27 @@
     color: #b3b3b3;
     font-size: 12px;
 }
-.form .bigmessage {
-    margin: 15px 0 0;
-    color: #b3b3b3;
-    font-size: 20px;
-}
+
 .form .message a {
     color: #4CAF50;
     text-decoration: none;
 }
-.form .message row {
+
+.form .message_15px{
+    margin: 15px 0 0;
+    color: #8d8b8b;
+    font-size: 15px;
+}
+.form .bigmessage {
+    margin: 15px 0 0;
+    color: #807f7f;
+    font-size: 20px;
+}
+.form .message_15px a {
+    color: #4CAF50;
+    text-decoration: none;
+}
+.form .message_15px row {
     margin: 40px 0;
 }
 

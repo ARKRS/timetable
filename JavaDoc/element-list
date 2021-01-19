@@ -1,4 +1,6 @@
 com.timers.timetable
+com.timers.timetable.api
+com.timers.timetable.config
 com.timers.timetable.controller
 com.timers.timetable.controller.deptmanagement
 com.timers.timetable.controller.timetablemanagement

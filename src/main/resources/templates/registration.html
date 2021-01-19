@@ -12,22 +12,67 @@
 <p>
 
 </p>
-<div class="login-page">
+
+<div class="form">
     <div th:if="${param.error}">
         Invalid username and password.
     </div>
     <div th:if="${param.logout}">
         You have been logged out.
     </div>
-    <div class="form">
-        <p class="bigmessage">Регистрация нового пользователя</p>
-        <form class="login-form"  name="reg" th:action="@{/registration}" method="post">
-            <input type="text" name="username" placeholder="Введите логин"/>
-            <input type="email" name="email" placeholder="Введите email"/>
-            <input type="password" name = "password" placeholder="password"/>
-            <button class="buttonlogin">создать аккаунт</button>
-        </form>
-        <p class="message">Уже регистрировались? <a th:href="@{/login}">Войти</a></p>
+
+
+    <div th:if="${sendac!=null}">
+        <th:block th:include = "regform/sendac.html"></th:block>
+    </div>
+    <div th:unless="${sendac!=null}">
+
+        <div th:if="${resetpassword!=null}">
+            <th:block th:include = "regform/resetpassword.html"></th:block>
+        </div>
+        <div th:unless="${resetpassword!=null}">
+
+            <div class="form">
+
+                <div th:if = "${forgotPassword!=null}">
+                    <p class="bigmessage">Cброс пароля</p>
+                </div>
+                <div th:unless="${forgotPassword!=null}">
+                    <p class="bigmessage">Регистрация нового пользователя</p>
+                </div>
+                <div th:if="${errorUserExists!=null}">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <p th:text="${errorUserExists}">message</p>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+                <form class="login-form"  name="reg" th:action="@{/registration}" method="post">
+                    <input type="text" name="username" placeholder="Введите логин" value=""/>
+                    <input type="email" name="email" placeholder="Введите email" value=""/>
+                    <div>
+                        <input type="password" name = "password" autocomplete="new-password"
+                               th:class="${passwordError!=null ? 'form-control is-invalid' :'form-control'}"
+                               placeholder="пароль"/>
+
+                        <div class="invalid-feedback">
+                            <p th:text="${passwordError}"></p>
+                        </div>
+
+                    </div>
+
+                    <div>
+                        <input type="password" name = "password2"
+                               th:class="${password2Error!=null? 'form-control is-invalid' :'form-control'}"
+                               placeholder="подтверждение пароля"/>
+                        <div class="invalid-feedback"><p th:text="${password2Error}"></p> </div>
+                    </div>
+
+                    <button class="buttonlogin" type="submit">создать аккаунт</button>
+                </form>
+                <p class="message">Уже регистрировались? <a th:href="@{/login}">Войти</a></p>
+                <p class="message">Забыли пароль? <a th:href="@{/restore}">Восстановить</a></p>
+            </div>
+        </div>
     </div>
 </div>
 </body>

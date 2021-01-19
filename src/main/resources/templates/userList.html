@@ -5,39 +5,53 @@
     <title>Список пользователей</title>
     <th:block th:include = "common/head.html :: head"></th:block>
     <link rel="stylesheet" href="/static/tableemp.css">
+    <link rel="stylesheet" href="/static/logincss2.css">
 
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
-<table class="container-table" th:name="main_table">
-    <h3>Список пользователей</h3>
-    <thead>
-        <tr>
-            <td>id</td>
-            <td>Name</td>
-            <td>Roles</td>
-            <td>Active</td>
-            <td>Email</td>
-            <td>Activation code</td>
-            <td></td>
-        </tr>
-    </thead>
-    <tbody>
+<p>
 
-    <!--/*@thymesVar id="users" type="com.timers.timetable.controller.usermanagement.UserController"*/-->
-    <tr th:each="user :${users}">
-        <td th:text="${user.id}"></td>
-        <td th:text="${user.username}"></td>
-        <td th:text="${#strings.toString(user.roles)}">
-        <td> <input type="checkbox" name="active" th:checked="${user.active}" th:disabled="true"></td>
-        <td th:text="${user.email}"></td>
-        <td th:text="${user.activationCode}"></td>
-        <td><a th:href="@{'/user/' +${user.id}}">edit</a></td>
-    </tr>
+</p>
+<div class="form">
+    <form class="login-form" action="/hello" method="get">
+        <form class="register-form">
+            <table class="container-table" th:name="main_table">
+                <p class="bigmessage">Список пользователей</p>
+                <thead>
+                <tr>
+                    <td>id</td>
+                    <td>Логин</td>
+                    <td>Роли</td>
+                    <td>Активный</td>
+                    <td>E-mail</td>
+                    <td>Код активации</td>
+                    <td></td>
+                </tr>
+                </thead>
+                <tbody>
 
-    </tbody>
+                <!--/*@thymesVar id="users" type="com.timers.timetable.controller.usermanagement.UserController"*/-->
+                <tr th:each="user :${users}">
+                    <td th:text="${user.id}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${#strings.toString(user.roles)}">
+                    <td> <input type="checkbox" name="active" th:checked="${user.active}" th:disabled="true"></td>
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.activationCode}"></td>
+                    <td><a th:href="@{'/user/' +${user.id}}">edit</a></td>
+                </tr>
 
-</table>
-<span><a href="/hello">Back</a></span>
+                </tbody>
+
+            </table>
+            <p>
+
+            </p>
+            <button class="buttonlogin" type="submit" style="width: 650px; border-radius: 4px 4px 0 0; border: 1px solid #2E3E2B">Вернуться назад</button>
+<!--            <span><a href="/hello">Back</a></span>-->
+        </form>
+    </form>
+</div>
 </body>
 </html>

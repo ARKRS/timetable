@@ -2,7 +2,6 @@ package com.timers.timetable.controller;
 
 import com.timers.timetable.deptsmanagement.Department;
 import com.timers.timetable.repos.DeptsRepo;
-import com.timers.timetable.repos.UserRepo;
 import com.timers.timetable.service.UserService;
 import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.User;

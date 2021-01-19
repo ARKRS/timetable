@@ -1,6 +1,5 @@
 package com.timers.timetable.controller.usermanagement;
 
-import com.timers.timetable.repos.UserRepo;
 import com.timers.timetable.service.UserService;
 import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
@@ -10,8 +9,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
@@ -19,13 +19,13 @@ import java.util.stream.Collectors;
 public class UserController {
 
     @Autowired
-    private UserRepo userRepo;
+    private UserService userService;
 
     @GetMapping
     public String userList(Model model){
 
 
-        List<User> users = (List<User>) (userRepo.findAll());
+        List<User> users = (List<User>) (userService.findAll());
         model.addAttribute("users",users);
 
 
@@ -42,45 +42,21 @@ public class UserController {
 
     @PostMapping("/adduser")
     public String addUser(@RequestParam String username,
-                          @RequestParam Map<String,String> form){
+                          @RequestParam Map<String,String> form, Map<String,Object> model){
 
         User newuser = new User();
         newuser.setRoles(new HashSet<>());
 
-        return updateUser(username,newuser,form);
+        return userService.updateUser(username,newuser,form, model);
     }
 
-   private String updateUser(String username, User user, Map<String,String> form){
-
-       user.setUsername(username);
-
-       Set<String> roles = Arrays.stream(Role.values())
-               .map(Role::name)
-               .collect(Collectors.toSet());
-
-       user.getRoles().clear();
-
-       user.setActive(form.get("active")==null? false:true);
-
-
-       for (String key : form.keySet()) {
-
-           if(roles.contains(key)){
-               user.getRoles().add(Role.valueOf(key));
-           }
-       }
-
-       userRepo.save(user);
-
-       return "redirect:/user";
-
-   }
     @PostMapping("saveuser")
     public String userSave(
             @RequestParam String username,
             @RequestParam Map<String,String> form,
-            @RequestParam("userId") User user){
+            @RequestParam("userId") User user,
+            Map<String ,Object> model){
 
-        return updateUser(username,user,form);
+        return userService.updateUser(username,user,form,model);
     }
 }

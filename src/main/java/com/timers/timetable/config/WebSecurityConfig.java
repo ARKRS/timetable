@@ -2,6 +2,7 @@ package com.timers.timetable.config;
 
 import com.timers.timetable.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationTrustResolver;
@@ -11,7 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
@@ -20,6 +23,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -38,16 +44,22 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .authorizeRequests()
-                .antMatchers("/", "/login","/static/**").permitAll()
-                .antMatchers("/registration", "/registration","/activate/*").permitAll()
-                .anyRequest().authenticated()
+                .   antMatchers("/", "/login","/static/**").permitAll()
+                .   antMatchers("/registration",
+                        "/restore",
+                        "/activate/*",
+                        "/restore/*",
+                        "/resetpassword",
+                        "/sendac").permitAll()
+                .anyRequest().
+                    authenticated()
                 .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
+                    .formLogin()
+                    .loginPage("/login")
+                    .permitAll()
                 .and()
-                .logout()
-                .permitAll();
+                    .logout()
+                    .permitAll();
 
 
 
@@ -55,18 +67,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-/*        auth.jdbcAuthentication()
-                .dataSource(dataSource)
 
- */
-        auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance());
+        auth.userDetailsService(userService)
+                .passwordEncoder(passwordEncoder);
 
-        //auth.inMemoryAuthentication().withUser("RA").password("449175").authorities("ADMIN");
-
-/*                .usersByUsernameQuery("select username, password, active from usr where username=?")
-                .authoritiesByUsernameQuery("select u.username, ur.roles from usr u inner join user_role ur on u.id = ur.user_id where u.username=?");
-
- */
     }
 
 
