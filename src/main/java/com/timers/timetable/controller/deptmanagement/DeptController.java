@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+
 @Controller
 @PreAuthorize("hasAuthority('ADMIN')")
 @RequestMapping("/depts")
@@ -38,16 +40,29 @@ public class DeptController {
     }
     @PostMapping(value = "/add")
     public String addDept(@RequestParam String deptname,
-                          @RequestParam ("selectedSupervisor") User user,
+                          @RequestParam String selectedSupervisor,//("selectedSupervisor") User user,
                           Model model
     ){
 
         Department department = deptsRepo.findByDeptname(deptname);
         if (department==null)
             department = new Department();
+        if (selectedSupervisor.equals("null"))
+            {
+                department.setSupervisor(null);
+            }
+        else
+            {
+                Optional optuser = userRepo.findById(Long.parseLong(selectedSupervisor));
+                User supervisor = (User) optuser.get();
+                if (supervisor!=null){
+                    department.setSupervisor(supervisor);
+                }
+              // department.setSupervisor((User) optuser);
+            }
 
         department.setDeptname(deptname);
-        department.setSupervisor(user);
+        //department.setSupervisor(user);
 
         deptsRepo.save(department);
 

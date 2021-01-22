@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.text.SimpleDateFormat;
@@ -36,7 +37,7 @@ public class GreetingController {
             model.addAttribute("userAuthorized", false);
             return model;
         }
-            //throw new NotFoundException("Not authority");
+        //throw new NotFoundException("Not authority");
         Object obj = auth.getPrincipal();
 
         String username = "";
@@ -46,9 +47,12 @@ public class GreetingController {
         } else {
             username = obj.toString();
         }
+
         User curUser = userService.getUserByUsername(username);
 
         model.addAttribute("userAuthorized",curUser!=null);
+
+        model.addAttribute("isAdmin",curUser!=null ? curUser.isAdmin() : false);
 
         Department department = deptsRepo.findBySupervisor(curUser);
 
@@ -73,13 +77,13 @@ public class GreetingController {
             return "redirect:/login";
         }
 
-        return "/hello";
+        return "hello";
     }
     @GetMapping("/gotohello")
     public String gotohello(Model model){
 
         ParameterFiller.fillModelParameters(model,userService,deptsRepo);
-        return "/hello";
+        return "hello";
     }
     @PostMapping("/gotohello")
     public String postgoString(Model model){
@@ -89,6 +93,15 @@ public class GreetingController {
 
     }
 
+ /*   @RequestMapping("/error")
+    public String error(Model model){
+
+        int i = 0;
+        i++;
+        return "error.html";
+
+    }
+*/
 //    @GetMapping("/")
 //    public String hello(Model model) throws NotFoundException {
 //        model = fillModelParameters(model);

@@ -32,6 +32,8 @@ public class ParameterFiller {
 
         model.addAttribute("userAuthorized",curUser!=null);
 
+        model.addAttribute("isAdmin",curUser!=null ? curUser.isAdmin() : false);
+
         Department department = deptsRepo.findBySupervisor(curUser);
 
         if(department == null)

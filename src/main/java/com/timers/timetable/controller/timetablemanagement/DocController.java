@@ -98,7 +98,7 @@ public class DocController {
         model.addAttribute("username",curUser);
         model.addAttribute("employees",mapList);
 
-        return "/doceditor";
+        return "doceditor";
     }
 
 
@@ -112,7 +112,7 @@ public class DocController {
         try {
             workdate = new SimpleDateFormat("dd.MM.yyy").parse(form.get("today"));
         }catch (ParseException e){
-            return "/hello";
+            return "hello";
         }
 
         Department department = (Department) departmentOptional.get();

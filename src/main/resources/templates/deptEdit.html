@@ -31,6 +31,7 @@
             <select name = "selectedSupervisor">
                 <option disabled selected = "selected" value="Укажите ответственного" name="newsupervisor">Укажите руководителя</option>
                 <option th:each="user:${users}" th:text="${user.username}" th:value="${user.id}"></option>
+                <option th:text="Очистить" value="null"></option>
             </select>
         </td>
         </tr>

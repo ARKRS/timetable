@@ -14,21 +14,20 @@
 <p></p>
 <div class="form">
     <form class="login-form" th:action="@{/logout}" method="post">
+        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
         <p class="bigmessage h2" th:inline="text">Здравствуйте, [[${#httpServletRequest.remoteUser}]]!</p>
         <p class="bigmessage">сегодня [[${today}]], ваш отдел: [[${department}]]</p>
-        <div sec:authorize="hasAuthority('ADMIN')">
+        <div th:if="${isAdmin==true}">
             <p class="message_15px">Пользователи: <a href="/user">изменить</a></p>
         </div>
-        <div sec:authorize="hasAuthority('ADMIN')">
+        <div th:if="${isAdmin==true}">
             <p class="message_15px">Подразделения: <a href="/depts">изменить</a></p>
         </div>
         <div th:if ="${department==null}">
-            <p class="message_15px">Вам не назначено подразделение. <a href="/hello">Выйти</a></p>
-            <!--                <a class ="nav-link" href="/hello" data-create = "doclink">Вам не назначено подразделение.</a>-->
+            <p class="message_15px">Вам не назначено подразделение. <a href="/login">Выйти</a></p>
         </div>
         <div th:unless="${department==null}">
             <p class="message_15px">Данные сотрудников <a href="/docs">изменить</a></p>
-            <!--                <a class="nav-link" href="/docs" data-create = "doclink">Изменение данных сотрудников</a>-->
         </div>
         <p>
 

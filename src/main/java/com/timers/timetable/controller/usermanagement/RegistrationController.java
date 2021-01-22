@@ -4,8 +4,8 @@ import com.timers.timetable.repos.DeptsRepo;
 import com.timers.timetable.service.UserService;
 import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.User;
-import org.dom4j.rule.Mode;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -75,7 +75,7 @@ public class RegistrationController {
     public String hello(Model model){
 
         ParameterFiller.fillModelParameters(model,userService,deptsRepo);
-        return "/hello";
+        return "hello";
     }
 
 
@@ -131,6 +131,7 @@ public class RegistrationController {
         }
         else {
             model.addAttribute("message","Не найден код активации");
+            return "login";
         }
 
         return "registration";

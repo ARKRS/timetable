@@ -2,6 +2,8 @@ package com.timers.timetable.config;
 
 import com.timers.timetable.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -19,6 +21,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+//@EnableAutoConfiguration(exclude = {ErrorMvcAutoConfiguration.class})
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -33,11 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .ignoring()
                 .antMatchers("/api/**");
 
-    }
-
-    @Override
-    public void setTrustResolver(AuthenticationTrustResolver trustResolver) {
-        super.setTrustResolver(trustResolver);
     }
 
     @Override

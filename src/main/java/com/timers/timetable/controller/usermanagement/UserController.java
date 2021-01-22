@@ -29,14 +29,16 @@ public class UserController {
         model.addAttribute("users",users);
 
 
-        return "/userList";
+        return "userList";
 
     }
     @GetMapping("{user}")
     public String userEditForm(@PathVariable User user, Model model){
 
+        user.setPassword("");
         model.addAttribute("user",user);
         model.addAttribute("roles", Role.values());
+
         return "userEdit";
     }
 

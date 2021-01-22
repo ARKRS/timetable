@@ -13,7 +13,7 @@ select:hover{background: #f1f3ef;}
     background: #cfeccf;
     alignment: center;
     max-width: 650px;
-    width: 650px;
+    width: 100%;
     align-content: center;
 }
 

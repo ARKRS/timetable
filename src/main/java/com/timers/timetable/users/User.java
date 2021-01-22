@@ -22,9 +22,9 @@ public class User implements UserDetails {
     @NotBlank(message = "Пароль не может быть пустым")
     private String password;
 
-    @Transient
-    @NotBlank(message = "Подтверждение пароля не может быть пустым")
-    private String password2;
+//    @Transient
+//    @NotBlank(message = "Подтверждение пароля не может быть пустым")
+//    private String password2;
 
     private boolean active;
 
@@ -91,6 +91,9 @@ public class User implements UserDetails {
         return active;
     }
 
+    public boolean isAdmin(){
+        return roles.contains(Role.ADMIN);
+    }
     public void setActive(boolean active) {
         this.active = active;
     }
@@ -123,6 +126,7 @@ public class User implements UserDetails {
         this.activationCode = activationCode;
     }
 
+/*
     public String getPassword2() {
         return password2;
     }
@@ -130,4 +134,5 @@ public class User implements UserDetails {
     public void setPassword2(String password2) {
         this.password2 = password2;
     }
+*/
 }

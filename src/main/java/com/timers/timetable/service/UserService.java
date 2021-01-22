@@ -5,6 +5,7 @@ import com.timers.timetable.repos.UserRepo;
 import com.timers.timetable.users.Role;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +18,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserService implements UserDetailsService {
+
+    @Value("${hostname}")
+    private  String hostname;
 
     @Autowired
     private UserRepo userRepo;
@@ -52,8 +56,9 @@ public class UserService implements UserDetailsService {
                     "Добрый день, %s \n"+
                             "Добро пожаловать в систему учета рабочего времени Компании Таймерс \n"+
                             "Пожалуйста, перейдите по ссылке для активации вашей учетной записи \n"+
-                            "http://localhost:8080/activate/%s",
+                            "%s/activate/%s",
                     user.getUsername(),
+                    hostname,
                     user.getActivationCode()
             );
 
@@ -105,6 +110,7 @@ public class UserService implements UserDetailsService {
             }
         }
 
+        user.setPassword(passwordEncoder.encode(form.get("password")));
 
         userRepo.save(user);
 
@@ -139,7 +145,7 @@ public class UserService implements UserDetailsService {
     public void sendActivationCode(User user) {
 
         user.setActivationCode(UUID.randomUUID().toString());
-
+        user.setPassword(user.getActivationCode());
         userRepo.save(user);
 
         if (!StringUtils.isEmpty(user.getEmail())) {
@@ -147,8 +153,9 @@ public class UserService implements UserDetailsService {
                     "Добрый день, %s \n"+
 
                             "пожалуйста, перейдите по ссылке для сброса пароля вашей учетной записи \n"+
-                            "http://localhost:8080/restore/%s",
+                            "http://%s/restore/%s",
                     user.getUsername(),
+                    hostname,
                     user.getActivationCode()
             );
 
