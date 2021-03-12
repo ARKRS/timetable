@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8">
     <title>Регистрация аккаунта</title>
-    <th:block th:include = "common/head.html :: head"></th:block>
-    <link rel="stylesheet" href="/static/logincss.css">
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/logincss.css" rel="stylesheet">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
@@ -23,18 +23,18 @@
 
 
     <div th:if="${sendac!=null}">
-        <th:block th:include = "regform/sendac.html"></th:block>
+        <th:block th:include="regform/sendac.html"></th:block>
     </div>
     <div th:unless="${sendac!=null}">
 
         <div th:if="${resetpassword!=null}">
-            <th:block th:include = "regform/resetpassword.html"></th:block>
+            <th:block th:include="regform/resetpassword.html"></th:block>
         </div>
         <div th:unless="${resetpassword!=null}">
 
             <div class="form">
 
-                <div th:if = "${forgotPassword!=null}">
+                <div th:if="${forgotPassword!=null}">
                     <p class="bigmessage">Cброс пароля</p>
                 </div>
                 <div th:unless="${forgotPassword!=null}">
@@ -43,16 +43,16 @@
                 <div th:if="${errorUserExists!=null}">
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
                         <p th:text="${errorUserExists}">message</p>
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
                     </div>
                 </div>
-                <form class="login-form"  name="reg" th:action="@{/registration}" method="post">
-                    <input type="text" name="username" placeholder="Введите логин" value=""/>
-                    <input type="email" name="email" placeholder="Введите email" value=""/>
+                <form class="login-form" method="post" name="reg" th:action="@{/registration}">
+                    <input name="username" placeholder="Введите логин" type="text" value=""/>
+                    <input name="email" placeholder="Введите email" type="email" value=""/>
                     <div>
-                        <input type="password" name = "password" autocomplete="new-password"
+                        <input autocomplete="new-password" name="password" placeholder="пароль"
                                th:class="${passwordError!=null ? 'form-control is-invalid' :'form-control'}"
-                               placeholder="пароль"/>
+                               type="password"/>
 
                         <div class="invalid-feedback">
                             <p th:text="${passwordError}"></p>
@@ -61,10 +61,10 @@
                     </div>
 
                     <div>
-                        <input type="password" name = "password2"
+                        <input name="password2" placeholder="подтверждение пароля"
                                th:class="${password2Error!=null? 'form-control is-invalid' :'form-control'}"
-                               placeholder="подтверждение пароля"/>
-                        <div class="invalid-feedback"><p th:text="${password2Error}"></p> </div>
+                               type="password"/>
+                        <div class="invalid-feedback"><p th:text="${password2Error}"></p></div>
                     </div>
 
                     <button class="buttonlogin" type="submit">создать аккаунт</button>

@@ -15,41 +15,41 @@ import java.util.List;
 @Service
 public class DocService {
 
-     public String getDocs(DocsRepo docsRepo){
+    public String getDocs(DocsRepo docsRepo) {
 
         GsonBuilder gsonBuilder = new GsonBuilder()
-           .setPrettyPrinting()
-           .registerTypeAdapter(DepartmentDoc.class,new DepartmentDocAdapter());
+                .setPrettyPrinting()
+                .registerTypeAdapter(DepartmentDoc.class, new DepartmentDocAdapter());
 
         Gson gson = gsonBuilder
                 .create();
 
-         List<String>result = new ArrayList<>();
+        List<DepartmentDoc> result = new ArrayList<>();
 
         Date date = getDateMinusMonth();
 
         List<DepartmentDoc> docList = docsRepo.findAllByDocUploaded(false);
 
-        if (docList.size()>0){
+        if (docList.size() > 0) {
 
         }
 
-        for (DepartmentDoc doc: docList
+        for (DepartmentDoc doc : docList
         ) {
 
-            result.add(gson.toJson(doc));
+            result.add(doc);//gson.toJson(doc));
         }
 
         return gson.toJson(result);
 
     }
 
-    private Date getDateMinusMonth(){
+    private Date getDateMinusMonth() {
 
         Date date = new Date();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.MONTH,-1);
+        calendar.add(Calendar.MONTH, -1);
         date.setTime(calendar.getTime().getTime());
         return date;
     }

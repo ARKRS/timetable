@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     @Value("${hostname}")
-    private  String hostname;
+    private String hostname;
 
     @Autowired
     private UserRepo userRepo;
@@ -33,14 +33,14 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepo.findByUsernameAndActive(username,true);
+        return userRepo.findByUsernameAndActive(username, true);
     }
 
     public boolean addUser(User user) {
 
-        User userFromDB = userRepo.findByUsernameAndActive(user.getUsername(),true);
+        User userFromDB = userRepo.findByUsernameAndActive(user.getUsername(), true);
 
-        if (userFromDB!=null)
+        if (userFromDB != null)
             return false;
 
         user.setEmail(user.getEmail().toLowerCase());
@@ -53,31 +53,31 @@ public class UserService implements UserDetailsService {
 
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
-                    "Добрый день, %s \n"+
-                            "Добро пожаловать в систему учета рабочего времени Компании Таймерс \n"+
-                            "Пожалуйста, перейдите по ссылке для активации вашей учетной записи \n"+
+                    "Добрый день, %s \n" +
+                            "Добро пожаловать в систему учета рабочего времени Компании Таймерс \n" +
+                            "Пожалуйста, перейдите по ссылке для активации вашей учетной записи \n" +
                             "%s/activate/%s",
                     user.getUsername(),
                     hostname,
                     user.getActivationCode()
             );
 
-            mailSender.send(user.getEmail(),"Activation code", message);
+            mailSender.send(user.getEmail(), "Activation code", message);
         }
 
 
         return true;
     }
 
-    public User getUserByUsername(String username){
-        User userFromDB = userRepo.findByUsernameAndActive(username,true);
+    public User getUserByUsername(String username) {
+        User userFromDB = userRepo.findByUsernameAndActive(username, true);
         return userFromDB;
     }
 
     public boolean activateUser(String code) {
         User user = userRepo.findByActivationCode(code);
 
-        if (user == null){
+        if (user == null) {
             return false;
         }
 
@@ -86,13 +86,13 @@ public class UserService implements UserDetailsService {
         return true;
     }
 
-    public List<User> findAll(){
+    public List<User> findAll() {
         return userRepo.findAll();
     }
 
-    public String updateUser(String username, User user, Map<String,String> form, Map<String,Object> model){
+    public String updateUser(String username, User user, Map<String, String> form, Map<String, Object> model) {
 
-            user.setUsername(username);
+        user.setUsername(username);
 
         Set<String> roles = Arrays.stream(Role.values())
                 .map(Role::name)
@@ -100,18 +100,18 @@ public class UserService implements UserDetailsService {
 
         user.getRoles().clear();
 
-        user.setActive(form.get("active")==null? false:true);
+        user.setActive(form.get("active") != null);
 
 
         for (String key : form.keySet()) {
 
-            if(roles.contains(key)){
+            if (roles.contains(key)) {
                 user.getRoles().add(Role.valueOf(key));
             }
         }
 
         user.setPassword(passwordEncoder.encode(form.get("password")));
-
+        user.setEmail(form.get("email"));
         userRepo.save(user);
 
         return "redirect:/user";
@@ -134,7 +134,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public User findUserByEmail(String email){
+    public User findUserByEmail(String email) {
 
         User user = userRepo.findByEmail(email);
 
@@ -145,26 +145,28 @@ public class UserService implements UserDetailsService {
     public void sendActivationCode(User user) {
 
         user.setActivationCode(UUID.randomUUID().toString());
-        user.setPassword(user.getActivationCode());
+        //user.setPassword(user.getActivationCode());
         userRepo.save(user);
 
         if (!StringUtils.isEmpty(user.getEmail())) {
             String message = String.format(
-                    "Добрый день, %s \n"+
+                    "Добрый день! \n"+
+                            "Ваша учетная запись: %s \n" +
 
-                            "пожалуйста, перейдите по ссылке для сброса пароля вашей учетной записи \n"+
+                            "пожалуйста, перейдите по ссылке для сброса пароля вашей учетной записи \n" +
                             "http://%s/restore/%s",
                     user.getUsername(),
                     hostname,
                     user.getActivationCode()
             );
 
-            mailSender.send(user.getEmail(),"Ссылка для восстановления пароля", message);
+            mailSender.send(user.getEmail(), "Восстановление пароля в системе учета рабочего времени", message);
         }
 
 
     }
-    public void setNewPassword(User user){
+
+    public void setNewPassword(User user) {
         user.setActive(true);
         user.setRoles(Collections.singleton(Role.USER));
         user.setActivationCode(null);
@@ -174,7 +176,7 @@ public class UserService implements UserDetailsService {
 
     }
 
-    public void simpleUpdateUser(User user){
+    public void simpleUpdateUser(User user) {
         user.setActivationCode(null);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);

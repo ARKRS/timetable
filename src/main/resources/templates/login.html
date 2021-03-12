@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+>
 <head>
     <meta charset="UTF-8">
     <title>Страница входа</title>
-    <th:block th:include = "common/head.html :: head"></th:block>
-    <link rel="stylesheet" href="/static/logincss.css">
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/logincss.css" rel="stylesheet">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
@@ -16,26 +16,26 @@
         <div th:if="${param.error}">
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
                 Некорректное имя пользователя или пароль.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
             </div>
         </div>
         <div th:if="${param.logout}">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 Вы вышли из системы.
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
             </div>
         </div>
         <div th:if="${message!=null}">
             <div class="alert alert-success alert-dismissible fade show" role="alert">
                 <p th:text="${message}">message</p>
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="alert" type="button"></button>
             </div>
         </div>
 
-    <p class="bigmessage">Введите учетные данные</p>
-        <form class="login-form" th:action="@{/login}" method="post">
-            <input type="text" name="username" placeholder="username"/>
-            <input type="password" name = "password" placeholder="password"/>
+        <p class="bigmessage">Введите учетные данные</p>
+        <form class="login-form" method="post" th:action="@{/login}">
+            <input name="username" placeholder="username" type="text"/>
+            <input name="password" placeholder="password" type="password"/>
             <button class="buttonlogin">войти</button>
         </form>
         <p class="message">Не зарегистрированы? <a th:href="@{/registration}">Создать аккаунт</a></p>

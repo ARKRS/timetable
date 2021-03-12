@@ -3,18 +3,15 @@ package com.timers.timetable.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-import java.util.List;
 
 @Configuration
 public class MvcConfig implements WebMvcConfigurer {
 
     @Bean
-    public RestTemplate getRestTemplate(){
+    public RestTemplate getRestTemplate() {
 
         return new RestTemplate();
     }
@@ -24,7 +21,6 @@ public class MvcConfig implements WebMvcConfigurer {
 //        registry.addViewController("/").setViewName("home");
 //        registry.addViewController("/registration").setViewName("registration");
         registry.addViewController("/login").setViewName("login");
-
 
 
     }
@@ -37,4 +33,4 @@ public class MvcConfig implements WebMvcConfigurer {
     }
 
 
-  }
+}

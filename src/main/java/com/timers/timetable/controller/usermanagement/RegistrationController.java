@@ -5,7 +5,6 @@ import com.timers.timetable.service.UserService;
 import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
@@ -27,17 +26,17 @@ public class RegistrationController {
     private DeptsRepo deptsRepo;
 
     @GetMapping("/registration")
-    public String registration(Model model){
+    public String registration(Model model) {
 
-       // model.addAttribute("password2Error","Password confirmation error!");
+        // model.addAttribute("password2Error","Password confirmation error!");
         return "registration";
     }
 
     @PostMapping("/registration")
     public String addUser(@RequestParam("password2") String passwordConfirm,
-        @Valid User user,
-        BindingResult bindingResult,
-        Model model){
+                          @Valid User user,
+                          BindingResult bindingResult,
+                          Model model) {
 
         boolean isConfirmEmpty = ObjectUtils.isEmpty(passwordConfirm);
 
@@ -58,36 +57,35 @@ public class RegistrationController {
             return "registration";
         }
 
-        if(!userService.addUser(user)){
-            model.addAttribute("errorUserExists","User exists");
+        if (!userService.addUser(user)) {
+            model.addAttribute("errorUserExists", "User exists");
             return "registration";
         }
 
-        if(!user.getEmail().equals("")){
-          model.addAttribute("message","На адрес " + user.getEmail() + " была отправлена \n"+
-                  "ссылка для активации учетной записи");
+        if (!user.getEmail().equals("")) {
+            model.addAttribute("message", "На адрес " + user.getEmail() + " была отправлена \n" +
+                    "ссылка для активации учетной записи");
         }
 
         return "login";
     }
 
     @GetMapping("/hello")
-    public String hello(Model model){
+    public String hello(Model model) {
 
-        ParameterFiller.fillModelParameters(model,userService,deptsRepo);
+        ParameterFiller.fillModelParameters(model, userService, deptsRepo);
         return "hello";
     }
 
 
     @GetMapping("/activate/{code}")
-    public String activate(Model model, @PathVariable String code){
+    public String activate(Model model, @PathVariable String code) {
 
         boolean isActivated = userService.activateUser(code);
 
         if (isActivated) {
             model.addAttribute("message", "Учетная запись успешно активирована!");
-        }
-        else {
+        } else {
             model.addAttribute("message", "Указанный код активации не найден!");
         }
 
@@ -96,7 +94,7 @@ public class RegistrationController {
     }
 
     @GetMapping("/login")
-    public String login(Model model){
+    public String login(Model model) {
 
         //model.addAttribute("message","message to login");
         return "login";
@@ -105,32 +103,32 @@ public class RegistrationController {
 
     /**
      * Функции для восстановления / сброса пароля
+     *
      * @param model
      * @return
      */
 
     @GetMapping("/restore")
-    public String gotoRestore(Model model){
+    public String gotoRestore(Model model) {
 
-        model.addAttribute("sendac","sendActivationCode");
+        model.addAttribute("sendac", "sendActivationCode");
         return "registration";
     }
 
 
     @GetMapping("/restore/{code}")
-    public String  restorePassword(Model model, @PathVariable String code){
+    public String restorePassword(Model model, @PathVariable String code) {
 
         User userToResetPassw = userService.findByActivationCode(code);
 
-        if (userToResetPassw!=null){
-            model.addAttribute("resetpassword","resetpassword");
-            model.addAttribute("message","Не найден код активации");
-           // model.addAttribute("sendac");
-            model.addAttribute("user",userToResetPassw);
+        if (userToResetPassw != null) {
+            model.addAttribute("resetpassword", "resetpassword");
+            model.addAttribute("message", "Не найден код активации");
+            // model.addAttribute("sendac");
+            model.addAttribute("user", userToResetPassw);
 
-        }
-        else {
-            model.addAttribute("message","Не найден код активации");
+        } else {
+            model.addAttribute("message", "Не найден код активации");
             return "login";
         }
 
@@ -140,23 +138,22 @@ public class RegistrationController {
 
     @GetMapping("/sendac")
     public String sendActivationCode(Model model,
-                                     @RequestParam Map<String,String> form){
+                                     @RequestParam Map<String, String> form) {
 
         String email;
         email = form.get("email");
-        if (email==null){
-            model.addAttribute("message","Email attribute not found at form parameters");
+        if (email == null) {
+            model.addAttribute("message", "Email attribute not found at form parameters");
             return "login";
         }
 
         User userFindedByEmail = userService.findUserByEmail(email.toLowerCase());
 
-        if (userFindedByEmail == null){
+        if (userFindedByEmail == null) {
             model.addAttribute("message", "По указанному email пользователь не найден");
             return "login";
 
-        }
-        else {
+        } else {
             model.addAttribute("message", "На адрес электронной почты \n"
                     + form.get("email").toLowerCase() + " была отправлена ссылка \n"
                     + "для восстановления доступа.");
@@ -167,9 +164,43 @@ public class RegistrationController {
 
     }
 
+    @PostMapping("/sendac")
+    public String sendActivationCode1(Model model,
+                                     @RequestParam Map<String, String> form) {
+
+        String email;
+        email = form.get("email");
+        if (email == null) {
+            model.addAttribute("message", "Email attribute not found at form parameters");
+            return "login";
+        }
+
+        User userFindedByEmail = userService.findUserByEmail(email.toLowerCase());
+
+        if (userFindedByEmail == null) {
+            model.addAttribute("message", "По указанному email пользователь не найден");
+            return "redirect:/user";
+
+        } else {
+            model.addAttribute("message", "На адрес электронной почты \n"
+                    + form.get("email").toLowerCase() + " была отправлена ссылка \n"
+                    + "для восстановления доступа.");
+            userService.sendActivationCode(userFindedByEmail);
+
+            return  "redirect:/user";
+        }
+
+    }
+    @PostMapping("/logout")
+    public String logout(){
+
+
+        return "login";
+    }
+
     @PostMapping("/resetpassword")
-    public String resetPassword(@RequestParam Map<String,String > form,
-                                Model model){
+    public String resetPassword(@RequestParam Map<String, String> form,
+                                Model model) {
 
         int i = 0;
         i++;
@@ -191,19 +222,18 @@ public class RegistrationController {
             model.addAttribute("passwordError", "Не совпадает пароль и подтверждение!");
         }
 
-        if (isConfirmEmpty){ // || bindingResult.hasErrors()) {
+        if (isConfirmEmpty) { // || bindingResult.hasErrors()) {
 
-            model.addAttribute("user",user);
-            model.addAttribute("activationcode",activationCode);
-            model.addAttribute("resetpassword","resetpassword");
+            model.addAttribute("user", user);
+            model.addAttribute("activationcode", activationCode);
+            model.addAttribute("resetpassword", "resetpassword");
             return "registration";
-        }
-        else {
+        } else {
 
             user.setPassword(password);
             userService.simpleUpdateUser(user);
 
-            model.addAttribute("message","Пароль успешно обновлен");
+            model.addAttribute("message", "Пароль успешно обновлен");
             return "login";
 
         }

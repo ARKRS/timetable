@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="https://www.thymeleaf.org">
 
-    <form class="form"  name="reg" th:action="@{/sendac}" method="get">
+<form class="form" method="get" name="reg" th:action="@{/sendac}">
 
-        <form class="login-form" >
-            <p class="bigmessage">Восстановление пароля</p>
+    <form class="login-form">
+        <p class="bigmessage">Восстановление пароля</p>
 
-            <input type="email" name="email" placeholder="Введите email" value=""/>
-            <button class="buttonlogin" type="submit">восстановить пароль</button>
-        </form>
-
+        <input name="email" placeholder="Введите email" type="email" value=""/>
+        <button class="buttonlogin" type="submit">восстановить пароль</button>
     </form>
+
+</form>
 </html>

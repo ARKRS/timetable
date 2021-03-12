@@ -1,12 +1,6 @@
-
 package com.timers.timetable.config;
 
-import org.apache.coyote.Response;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,12 +28,13 @@ public class TimetableExceptionAdvice implements HandlerExceptionResolver {
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {
 
         ModelAndView modelAndView = new ModelAndView("/error");
-        modelAndView.addObject("message",e.getMessage());
-        modelAndView.addObject("method",o.toString());
+        modelAndView.addObject("message", e.getMessage());
+        modelAndView.addObject("stringmessage",e.toString());
+        modelAndView.addObject("method", o.toString());
         return modelAndView;
     }
 
-    public class Response{
+    public class Response {
 
         private String message;
 

@@ -22,43 +22,55 @@ public class UserController {
     private UserService userService;
 
     @GetMapping
-    public String userList(Model model){
+    public String userList(Model model) {
 
 
-        List<User> users = (List<User>) (userService.findAll());
-        model.addAttribute("users",users);
+        List<User> users = userService.findAll();
+        model.addAttribute("users", users);
 
 
         return "userList";
 
     }
+
     @GetMapping("{user}")
-    public String userEditForm(@PathVariable User user, Model model){
+    public String userEditForm(@PathVariable User user, Model model) {
 
         user.setPassword("");
-        model.addAttribute("user",user);
+        model.addAttribute("user", user);
         model.addAttribute("roles", Role.values());
 
         return "userEdit";
     }
 
+    @GetMapping("/addmanualy")
+    public String addNewUserManualy(){
+
+        return "userAdd.html";
+    }
+    @GetMapping("createuser")
+    public String createNewUser(@RequestParam Map<String, String> form){
+
+        return "redirect:/user";
+    }
+
     @PostMapping("/adduser")
     public String addUser(@RequestParam String username,
-                          @RequestParam Map<String,String> form, Map<String,Object> model){
+                          @RequestParam Map<String, String> form, Map<String, Object> model) {
 
         User newuser = new User();
         newuser.setRoles(new HashSet<>());
 
-        return userService.updateUser(username,newuser,form, model);
+        return userService.updateUser(username, newuser, form, model);
     }
 
     @PostMapping("saveuser")
     public String userSave(
             @RequestParam String username,
-            @RequestParam Map<String,String> form,
+            @RequestParam Map<String, String> form,
             @RequestParam("userId") User user,
-            Map<String ,Object> model){
+            Map<String, Object> model) {
 
-        return userService.updateUser(username,user,form,model);
+        return userService.updateUser(username, user, form, model);
     }
 }

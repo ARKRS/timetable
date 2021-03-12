@@ -1,19 +1,19 @@
 select employee0_.employee_id as employee1_3_0_,
-       employee0_.id as id4_3_0_,
-       employee0_.ext_code as ext_code2_3_0_,
-       employee0_.fio as fio3_3_0_,
-       department1_.id as id1_0_1_,
-       department1_.deptname as deptname2_0_1_,
+       employee0_.id          as id4_3_0_,
+       employee0_.ext_code    as ext_code2_3_0_,
+       employee0_.fio         as fio3_3_0_,
+       department1_.id        as id1_0_1_,
+       department1_.deptname  as deptname2_0_1_,
        department1_.is_active as is_activ3_0_1_,
-       department1_.user_id as user_id4_0_1_,
-       user2_.id as id1_5_2_,
-       ser2_.active as active2_5_2_,
-       user2_.password as password3_5_2_,
-       user2_.username as username4_5_2_,
-       roles3_.user_id as user_id1_4_3_,
-       roles3_.roles as roles2_4_3_
+       department1_.user_id   as user_id4_0_1_,
+       user2_.id              as id1_5_2_,
+       ser2_.active           as active2_5_2_,
+       user2_.password        as password3_5_2_,
+       user2_.username        as username4_5_2_,
+       roles3_.user_id        as user_id1_4_3_,
+       roles3_.roles          as roles2_4_3_
 from employee employee0_
-    left outer join department department1_ on employee0_.id=department1_.id
-    left outer join usr user2_ on department1_.user_id=user2_.id
-    left outer join user_role roles3_ on user2_.id=roles3_.user_id
-where employee0_.employee_id=?
+         left outer join department department1_ on employee0_.id = department1_.id
+         left outer join usr user2_ on department1_.user_id = user2_.id
+         left outer join user_role roles3_ on user2_.id = roles3_.user_id
+where employee0_.employee_id = ?

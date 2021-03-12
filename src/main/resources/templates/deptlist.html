@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Depts editor</title>
     <div th:insert="~{common/head :: head}"></div>
-    <link rel="stylesheet" href="/static/tableemp.css">
-    <link rel="stylesheet" href="/static/logincss2.css">
+    <link href="/static/tableemp.css" rel="stylesheet">
+    <link href="/static/logincss2.css" rel="stylesheet">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
@@ -14,7 +14,7 @@
 </p>
 
 <div class="form">
-    <form class="login-form"  action="/hello" method="get">
+    <form action="/hello" class="login-form" method="get">
         <form class="register-form">
             <p class="bigmessage h2">Список отделов</p>
 
@@ -28,8 +28,8 @@
                 </thead>
                 <tbody>
                 <tr th:each="dept: ${depts}">
-                    <td th:text="${dept.deptname}" th:name="${dept.deptname}"></td>
-                    <div th:if = "${dept.supervisor != null}">
+                    <td th:name="${dept.deptname}" th:text="${dept.deptname}" style="text-align: left; text-indent: 5px"></td>
+                    <div th:if="${dept.supervisor != null}">
                         <td th:text="${dept.supervisor.username}"></td>
                     </div>
                     <div th:unless="${dept.supervisor != null}">
@@ -41,7 +41,9 @@
             </table>
             <p>
             </p>
-            <button class="buttonlogin" type="submit" style="width: 650px; border-radius: 4px 4px 0 0; border: 1px solid #2E3E2B">Вернуться назад</button>
+            <button class="buttonlogin" style="width: 650px; border-radius: 4px 4px 0 0; border: 1px solid #2E3E2B"
+                    type="submit">Вернуться назад
+            </button>
         </form>
     </form>
 </div>

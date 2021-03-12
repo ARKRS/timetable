@@ -14,20 +14,83 @@
 <p></p>
 <div class="form">
     <form class="login-form" th:action="@{/logout}" method="post">
-        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
         <p class="bigmessage h2" th:inline="text">Здравствуйте, [[${#httpServletRequest.remoteUser}]]!</p>
         <p class="bigmessage">сегодня [[${today}]], ваш отдел: [[${department}]]</p>
-        <div th:if="${isAdmin==true}">
+        <div th:if="${isAdmin}">
             <p class="message_15px">Пользователи: <a href="/user">изменить</a></p>
         </div>
-        <div th:if="${isAdmin==true}">
+        <div th:if="${isAdmin}">
             <p class="message_15px">Подразделения: <a href="/depts">изменить</a></p>
         </div>
         <div th:if ="${department==null}">
-            <p class="message_15px">Вам не назначено подразделение. <a href="/login">Выйти</a></p>
+            <p class="message_15px">Вам не назначено подразделение.</p>
+
         </div>
-        <div th:unless="${department==null}">
-            <p class="message_15px">Данные сотрудников <a href="/docs">изменить</a></p>
+        <p class="message_15px">Подразделение:</p>
+
+        <select style="margin: 0px;  max-width: 176px"
+                th:name="dept2table"
+                th:id="dept2table">
+            <div th:if="${isAdmin==true}">
+                <option th:each="dept : ${deptlist}"
+                        th:selected="${dept.value==department}"
+                        th:text="${dept.value}"
+                        th:value="${dept.key}"></option>
+            </div>
+            <div th:unless="${isAdmin==true}">
+                <option
+                        selected="${department}"
+                        th:text="${department}"
+                        th:value="${departmentextcode}"></option>
+            </div>
+        </select>
+        <div th:if="${department!=null || isAdmin ==true}">
+            <p class="message_15px">Данные сотрудников за</p>
+                <table style="margin-left: auto; margin-right: auto">
+                    <tr>
+                        <td>
+                            <input style="margin: 0px" type="date" id="today" th:value="${#dates.format(startMonth,'yyy-MM-dd')}" th:readonly="${isAdmin==false}">
+                        </td>
+                        <td>
+                            <button class="buttonlogin" formaction="/docs" th:method="get">изменить</button>
+                        </td>
+                    </tr>
+                </table>
+            <p class="message_15px">Табель подразделения за:</p>
+            <table style="margin-left: auto; margin-right: auto">
+                <tr>
+                    <td>
+                        <input style="margin: 0px; max-width: 176px" type="month"
+                               th:name="date2table"
+                               th:readonly="${isAdmin==false}"
+                               th:value="${#dates.format(startMonth,'YYYY-MM')}">
+                    </td>
+                    <td>
+                        <div th:if="${department!=null || isAdmin ==true}">
+                            <button class="buttonlogin" formaction="/docs/table">показать</button>
+                        </div>
+                    <td>
+                </tr>
+                <tr>
+                    <td colspan="2"><p class="message_15px">Данные по учету ГСМ за:</p></td>
+                </tr>
+
+                <tr>
+                    <td>
+                        <input style="margin: 0px; max-width: 176px" type="month"
+                               th:name="date2fueltable"
+                               th:readonly="${isAdmin==false}"
+                               th:value="${#dates.format(startMonth,'YYYY-MM')}">
+                    </td>
+                    <td>
+                        <div th:if="${department!=null || isAdmin ==true}">
+                            <button class="buttonlogin" formaction="/docs/fuel">изменить</button>
+                        </div>
+                    <td>
+                </tr>
+
+            </table>
+
         </div>
         <p>
 

@@ -2,7 +2,6 @@ package com.timers.timetable.docs;
 
 import com.google.gson.*;
 import com.timers.timetable.employees.Employee;
-import com.timers.timetable.employees.EmployeeStatus;
 
 import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
@@ -18,18 +17,26 @@ public class DepartmentDocAdapter implements JsonSerializer<DepartmentDoc> {
 
         result.addProperty("workdate", new SimpleDateFormat("dd.MM.yyy").format(departmentDoc.getWorkdate()));
         result.addProperty("department", departmentDoc.getDepartment().getDeptname());
-        result.addProperty("UUID",departmentDoc.getDoc_UUID());
+        result.addProperty("department_id", departmentDoc.getDepartment().getExtCode().trim());
+        result.addProperty("UUID", departmentDoc.getDoc_UUID());
 
         JsonArray employeesjs = new JsonArray();
 
-        Map <Employee, EmployeeStatus> employees =  departmentDoc.getEmployees();
 
-        for (Map.Entry<Employee,EmployeeStatus> iter: employees.entrySet()
-             ) {
+        Map<Employee, DepartmentDoc.AbsentPeriod> employees = departmentDoc.getAbsentPeriods();//getEmployees();
+
+        for (Map.Entry<Employee, DepartmentDoc.AbsentPeriod> iter : employees.entrySet()
+        ) {
             JsonObject jsonElement = new JsonObject();
-            jsonElement.addProperty("fio",iter.getKey().getFio());
-            jsonElement.addProperty("extcode", iter.getKey().getExtCode());
-            jsonElement.addProperty("status",iter.getValue().toString());
+            DepartmentDoc.AbsentPeriod absentPeriod = iter.getValue();
+            jsonElement.addProperty("fio", iter.getKey().getFio().trim());
+            jsonElement.addProperty("extcode", iter.getKey().getExtCode().trim());
+            jsonElement.addProperty("status", absentPeriod.getEmployeeStatus().toString());
+            jsonElement.addProperty("beginhour", absentPeriod.getBeginhour());
+            jsonElement.addProperty("beginminutes", absentPeriod.getBeginminutes());
+
+            jsonElement.addProperty("endhour", absentPeriod.getEndhour());
+            jsonElement.addProperty("endminutes", absentPeriod.getEndminutes());
 
             employeesjs.add(jsonElement);
         }

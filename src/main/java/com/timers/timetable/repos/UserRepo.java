@@ -10,7 +10,6 @@ public interface UserRepo extends JpaRepository<User, Long> {
     User findByUsernameAndActive(String username, boolean isActive);
 
 
-
     Optional<User> findById(Long id);
 
     User findByActivationCode(String code);

@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Ввод состояния сотрудников</title>
-    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">-->
-    <th:block th:include = "common/head.html :: head"></th:block>
-    <!--    <div th:include="~{common/head.html :: head}"></div>-->
-    <link rel="stylesheet" href="/static/tableemp.css">
-    <link rel="stylesheet" href="/static/logincss2.css">
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/tableemp.css" rel="stylesheet">
+    <link href="/static/logincss2.css" rel="stylesheet">
 </head>
 <body>
 <div th:insert="~{common/body :: body}"></div>
@@ -15,56 +13,97 @@
 
 </p>
 <div class="form">
-    <p class="bigmessage h2" >Состояние сотрудников: [[${dapartment_name}]], дата [[${today}]]</p>
-    <form class="login-form" method="post" background="#FFFFFF">
-        <input type="hidden" th:value="${_csrf.token}" name="_csrf" placeholder="_csrf">
-        <input type="hidden" th:value="${department_id}" name="department_id" placeholder="department_id">
-        <input type="hidden" th:value="${today}" name="today" placeholder="today">
+    <p class="bigmessage h2">Состояние сотрудников: [[${dapartment_name}]], дата [[${today}]]</p>
+    <form background="#FFFFFF" class="login-form" method="post">
+        <input name="_csrf" placeholder="_csrf" th:value="${_csrf.token}" type="hidden">
+        <input name="department_id" placeholder="department_id" th:value="${department_id}" type="hidden">
+        <input name="today" placeholder="today" th:value="${today}" type="hidden">
         <form class="register-form">
             <table class="container-table" th:name="main_table">
                 <thead>
                 <tr>
-                    <td>№</td>
-                    <td>ФИО</td>
-                    <td>Состояние</td>
+                    <td rowspan="2">№</td>
+                    <td rowspan="2">ФИО</td>
+                    <td rowspan="2">Состояние</td>
+                    <td colspan="4" rowspan="1">Отсутствие</td>
+                </tr>
+                <tr>
+                    <td>С: час</td>
+                    <td>мин</td>
+                    <td>По: час</td>
+                    <td>мин</td>
                 </tr>
                 </thead>
                 <tbody>
-                <div th:each="emppair, state: ${employees}">
-                    <tr  th:each="employee : ${emppair}">
-                        <td th:utext="${state.index+1}">State</td>
-                        <td th:name="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:value="empoloyee_+ ${#numbers.formatInteger(employee.key.employee_id,3)}" th:utext="${employee.key.fio}">Fio</td>
-                        <td>
-                            <select  th:name="employeeStatus +${#numbers.formatInteger(employee.key.employee_id,3)}">
+                <div th:each="employee_str,state : ${employees}">
+                    <tr>
+                        <td rowspan="1" th:utext="${state.index+1}">State</td>
+
+                        <td  rowspan="1" th:name="empoloyee_+ ${employee_str.get('employee_index')}"
+                            th:utext="${employee_str.get('employee')}"
+                            th:value="empoloyee_+ ${employee_str.get('employee_index')}" style="text-align: left; text-indent: 10px">Fio
+                        </td>
+                        <td rowspan="1">
+                            <select onchange="checkStatusAndDisableTime(this)"
+                                    th:name="employeeStatus +${employee_str.get('employee_index')}">
+
                                 <div th:each="status : ${T(com.timers.timetable.employees.EmployeeStatus).values()}">
-                                    <div th:if="${status==employee.value}">
-                                        <option  th:value="${status}" th:text="${status}" th:selected="${status}"></option>
+                                    <div th:if="${status==employee_str.get('status')}">
+                                        <option th:selected="${status}" th:text="${status}"
+                                                th:value="${status}"></option>
                                     </div>
-                                    <div th:unless="${status==employee.value}">
-                                        <option  th:value="${status}" th:text="${status}"></option>
+                                    <div th:unless="${status==employee_str.get('status')}">
+                                        <option th:text="${status}" th:value="${status}"></option>
                                     </div>
                                 </div>
                             </select>
+                        </td>
+                        <td rowspan="1">
+                            <input class="mod" max="19" min="8"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
+                                   th:id="beginhour_ +${employee_str.get('employee_index')}" th:name="beginhour_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('beginhour')}"
+                                   type="number"/>
+                        </td>
+                        <td rowspan="1">
+                            <input class="mod" max="59"
+                                   min="0"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
+                                   th:id="beginminutes_ +${employee_str.get('employee_index')}" th:name="beginminutes_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('beginminutes')}"
+                                   type="number"/>
+                        </td>
+                        <td rowspan="1">
+                            <input class="mod" max="19" min="8"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
+                                   th:id="endhour_ +${employee_str.get('employee_index')}" th:name="endhour_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('endhour')}"
+                                   type="number"/>
+                        </td>
+                        <td rowspan="1">
+                            <input class="mod" max="59" min="0"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
+                                   th:id="endminutes_ +${employee_str.get('employee_index')}" th:name="endminutes_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('endminutes')}"
+                                   type="number"/>
                         </td>
                     </tr>
                 </div>
                 </tbody>
             </table>
-
             <table class="container-table">
                 <tr>
-            <td>
-                <button class="buttonlogin" type="submit" formaction="/gotohello" >Вернуться назад</button>
-            </td>
-
-            <td>
-                <button class="buttonlogin" type="submit" formaction="/docs/savedoc">Сохранить данные</button>
-            </td>
+                    <td>
+                        <button class="buttonlogin" formaction="/gotohello" type="submit">Вернуться назад</button>
+                    </td>
+                    <td>
+                        <button class="buttonlogin" onclick="everyBodyAtWork(this)" type="button">Все работают</button>
+                    </td>
+                    <td>
+                        <button class="buttonlogin" formaction="/docs/savedoc" type="submit">Сохранить данные</button>
+                    </td>
                 </tr>
             </table>
 
         </form>
     </form>
 </div>
+<script src="js/doceditor.js"></script>
 </body>
 </html>

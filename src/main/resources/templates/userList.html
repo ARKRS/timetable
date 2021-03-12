@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Список пользователей</title>
-    <th:block th:include = "common/head.html :: head"></th:block>
-    <link rel="stylesheet" href="/static/tableemp.css">
-    <link rel="stylesheet" href="/static/logincss2.css">
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/tableemp.css" rel="stylesheet">
+    <link href="/static/logincss2.css" rel="stylesheet">
 
 </head>
 <body>
@@ -15,7 +15,8 @@
 </p>
 <div class="login-page">
     <div class="form">
-        <form class="login-form" action="/hello" method="get">
+        <form class="login-form" method="get">
+<!--        <form action="/hello" class="login-form" method="get">-->
             <table class="container-table" th:name="main_table">
                 <p class="bigmessage">Список пользователей</p>
                 <thead>
@@ -36,7 +37,7 @@
                     <td th:text="${user.id}"></td>
                     <td th:text="${user.username}"></td>
                     <td th:text="${#strings.toString(user.roles)}">
-                    <td> <input type="checkbox" name="active" th:checked="${user.active}" th:disabled="true"></td>
+                    <td><input name="active" th:checked="${user.active}" th:disabled="true" type="checkbox"></td>
                     <td th:text="${user.email}"></td>
                     <td th:text="${user.activationCode}"></td>
                     <td><a th:href="@{'/user/' +${user.id}}">edit</a></td>
@@ -48,7 +49,16 @@
             <p>
 
             </p>
-            <button class="buttonlogin" type="submit" style="width: 650px; border-radius: 4px 4px 0 0; border: 1px solid #2E3E2B">Вернуться назад</button>
+            <button class="buttonlogin"
+                    type="submit" formaction="/user/addmanualy">
+                Добавить пользователя
+            </button>
+            <p>
+
+            </p>
+            <button class="buttonlogin"
+                    type="submit" formaction = "/hello">Вернуться назад
+            </button>
             <!--            <span><a href="/hello">Back</a></span>-->
         </form>
     </div>

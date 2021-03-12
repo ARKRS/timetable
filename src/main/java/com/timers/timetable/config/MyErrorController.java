@@ -15,6 +15,7 @@ public class MyErrorController implements ErrorController {
 
         return "Error handling";
     }
+
     @Override
     public String getErrorPath() {
         return PATH;

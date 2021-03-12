@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Регистрация нового пользователя</title>
-<!--    <link rel="stylesheet" href="/static/logincss.css">-->
-    <link rel="stylesheet" href="/static/reg.css">
-    <link rel="icon" href="/static/minilogo.png">
+    <!--    <link rel="stylesheet" href="/static/logincss.css">-->
+    <link href="/static/reg.css" rel="stylesheet">
+    <link href="/static/minilogo.png" rel="icon">
 </head>
 <body>
 <div class="login-page">
@@ -13,21 +13,21 @@
         User exists!
     </div>
     <div class="form">
-        <form class="login-form" th:action="@{/registration}" method="post">
+        <form class="login-form" method="post" th:action="@{/registration}">
             <p class="message">Create an account</p>
             <p class="row">
-                <div class="left-column">
-                    <label for="email">e-mail</label>
-                </div>
-                <div class="right-column">
-                    <input type="text" name="email" id="email" placeholder="email"/>
-                </div>
+            <div class="left-column">
+                <label for="email">e-mail</label>
+            </div>
+            <div class="right-column">
+                <input id="email" name="email" placeholder="email" type="text"/>
+            </div>
             </p>
 
             <label>username</label>
-            <input type="text" name="username" placeholder="username"/>
+            <input name="username" placeholder="username" type="text"/>
             <label>password</label>
-            <input type="password" name = "password" placeholder="password"/>
+            <input name="password" placeholder="password" type="password"/>
             <button>Create account</button>
         </form>
         <p class="message">Already registered? <a th:href="@{/login}">Login</a></p>

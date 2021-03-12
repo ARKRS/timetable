@@ -38,6 +38,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
+    public User() {
+        super();
+    }
+
     public Long getId() {
         return id;
     }
@@ -48,6 +52,10 @@ public class User implements UserDetails {
 
     public String getUsername() {
         return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     @Override
@@ -70,10 +78,6 @@ public class User implements UserDetails {
         return isActive();
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
@@ -91,11 +95,12 @@ public class User implements UserDetails {
         return active;
     }
 
-    public boolean isAdmin(){
-        return roles.contains(Role.ADMIN);
-    }
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public boolean isAdmin() {
+        return roles.contains(Role.ADMIN);
     }
 
     public Set<Role> getRoles() {
@@ -104,10 +109,6 @@ public class User implements UserDetails {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
-    }
-
-    public User() {
-        super();
     }
 
     public String getEmail() {

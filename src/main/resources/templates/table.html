@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Табель подразделения</title>
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/tableemp.css" rel="stylesheet">
+    <link href="/static/logincss2.css" rel="stylesheet">
+</head>
+<body>
+<div th:insert="~{common/body :: body}"></div>
+<p>
+<div class="form" style="width: 80%; max-width: 920px">
+    <p class="bigmessage h2">Табель подразделения: [[${dapartment_name}]], месяц [[${month}]]</p>
+    <form background="#FFFFFF" class="login-form">
+        <form class="register-form">
+            <table class="container-table" th:name="main_table" style="font-size: small">
+                <thead>
+                <tr>
+                    <td>Сотрудник</td>
+                    <td th:each="date_ : ${dates}" th:text="${#strings.substring(date_,0,2)}">
+                    </td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="emp : ${employees}">
+                    <td th:text="${emp}" style="text-align: left"/>
+                    <th:block th:each="date_ : ${dates}">
+                        <td th:text="${table.get(date_).get(emp)==null ? '-' : table.get(date_).get(emp)}"
+                            th:style="'background:#' + ${table.get(date_).get(emp)==null ? status_colors.get('Н/Д') : status_colors.get(table.get(date_).get(emp))}"
+                        />
+                    </th:block>
+                </tr>
+                </tbody>
+            </table>
+            <button class="buttonlogin" formaction="/gotohello" type="submit">Вернуться назад</button>
+        </form>
+    </form>
+</div>
+</body>
+</html>

@@ -10,14 +10,17 @@ table {
     border: 3px solid #2E3E2B;
     border-radius: 5px;
 }
+
 th {
     font-size: 18px;
     padding: 10px;
 }
+
 td {
     background: -moz-linear-gradient(right, #73a455, #85cb64);
     padding: 10px;
 }
+
 .row {
     margin: 40px 0;
 }
@@ -30,15 +33,17 @@ td {
 .right-column {
     display: inline-block;
 }
+
 label {
-    display:flex;
+    display: flex;
 }
 
 label input {
-    margin-left:10px;
+    margin-left: 10px;
 }
+
 label select {
-    margin-left:10px;
+    margin-left: 10px;
 }
 
 /*table {width: 100%; border-collapse: separate; border-spacing: 4px;}*/

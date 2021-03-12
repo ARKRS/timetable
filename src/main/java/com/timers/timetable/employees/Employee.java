@@ -2,7 +2,6 @@ package com.timers.timetable.employees;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.timers.timetable.deptsmanagement.Department;
 
 import javax.persistence.*;
@@ -15,19 +14,23 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long employee_id;
 
-
     private String fio;
 
     private String extCode;
 
-//    @ManyToOne(fetch = FetchType.EAGER)
-//    @JoinColumn(name = "department_id")
+    @Column(name = "carmodel")
+    private String carModel;
+
+    @Column(name = "carnumber")
+    private String carNumber;
+
+    @Column(name = "carconsumption")
+    private Integer carConsumption;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    //TODO переименовать колонку в department_id
     @JoinColumn(name = "id", referencedColumnName = "id")
     @JsonIgnore
     private Department department;
-
 
     public String getFio() {
         return fio;
@@ -61,6 +64,15 @@ public class Employee {
         this.department = department;
     }
 
+    public String getCarModel() {        return carModel;    }
 
+    public void setCarModel(String carModel) {        this.carModel = carModel;    }
 
+    public String getCarNumber() {        return carNumber;    }
+
+    public void setCarNumber(String carNumber) {        this.carNumber = carNumber;    }
+
+    public Integer getCarConsumption() {        return carConsumption;    }
+
+    public void setCarConsumption(Integer carConsumption) {        this.carConsumption = carConsumption;    }
 }

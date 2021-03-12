@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Данные по ГСМ</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <th:block th:include="common/head.html :: head"></th:block>
+    <link href="/static/tableemp.css" rel="stylesheet">
+    <link href="/static/logincss2.css" rel="stylesheet">
+
+</head>
+<body>
+<div th:insert="~{common/body :: body}"></div>
+<script> $('body').on('keydown', 'input, select', function(e) {
+    if (e.key === "Enter") {
+        var self = $(this), form = self.parents('form:eq(0)'), focusable, next;
+        focusable = form.find('input,a,select,button,textarea').filter(':visible');
+        next = focusable.eq(focusable.index(this)+1);
+        if (next.length) {
+            next.focus();
+        } else {
+            form.submit();
+        }
+        return false;
+    }
+});
+</script>
+<script src="../static/js/doceditor.js"></script>
+<p>
+<div class="form" style="width: 90%; max-width: 1220px">
+    <p class="bigmessage h2">Учет расхода ГСМ подразделения <br> [[${department_name}]], месяц [[${month}]] <br>
+        укажите количество литров в датах заправки автомобиля
+    </p>
+
+    <form background="#FFFFFF" class="login-form" method="post">
+        <input name="_csrf" placeholder="_csrf" th:value="${_csrf.token}" type="hidden">
+        <input name="department_id" placeholder="department_id" th:value="${department_id}" type="hidden">
+        <input name="workmonth" placeholder="workmonth" th:value="${month}" type="hidden">
+        <form class="register-form">
+            <input type="hidden" id="maxdates" th:value="${dates.size()}">
+            <table class="container-table"
+                   th:name="fuel_table"
+                   th:id="fuel_table"
+                   onchange="recalculateStringTotals()"
+                   style="font-size: small">
+                <thead>
+                <tr>
+                    <td rowspan="2">Сотрудник</td>
+                    <td colspan="3">Автомобиль</td>
+
+                    <td rowspan="2" th:each="date_ : ${dates}" th:text="${#strings.substring(date_,0,2)}"></td>
+                    <td rowspan="2"> <b>Итого</b></td>
+                </tr>
+                <tr>
+                    <td style="width: 12ch">Марка</td>
+                    <td style="width: 7ch">Гос.номер</td>
+                    <td style="width: 3ch">Расх.л</td>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="emp : ${employees}">
+                    <td th:text="${emp}"
+                        th:id="employeecode_ + ${emplist.get(emp)}"
+                        style="white-space: nowrap"/>
+                    </td>
+
+                    <td>
+                        <input class="mod-no-spin" type="text"
+                               th:name="car_model_ + ${emplist.get(emp)}" th:id="car_model_ + ${emplist.get(emp)}"
+                               th:value="${carInfo.containsKey(#strings.append('car_model_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_model_',emplist.get(emp)))} : ''"
+                               placeholder="Москвич" style="text-align: center" >
+                    </td>
+                    <td>
+                        <input class="mod-no-spin" type="text"
+                               th:name="car_number_ + ${emplist.get(emp)}"
+                               th:id="car_number_ + ${emplist.get(emp)}"
+                               th:value="${carInfo.containsKey(#strings.append('car_number_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_number_',emplist.get(emp)))} : ''"
+                               placeholder="А000АА" style="text-align: center">
+                    </td>
+                    <td>
+                        <input type="number" class="mod-no-spin" max="25"
+                               th:name="car_consumption_ + ${emplist.get(emp)}" th:id="car_consumption_ + ${emplist.get(emp)}"
+                               th:value="${carInfo.containsKey(#strings.append('car_consumption_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_consumption_',emplist.get(emp)))} : ''"
+                               placeholder="10" style="text-align: center">
+                    </td>
+                    <th:block th:each="date_ : ${dates}">
+                        <td>
+                            <input class="mod-no-spin" min="0" max="120" type="number" th:name="amount_ +${#strings.substring(date_,0,2)}  +'__'+ ${emplist.get(emp)}"
+                                   th:id="amount_ +${#strings.substring(date_,0,2)}  +'__'+ ${emplist.get(emp)}"
+                                   style="margin: 0px; padding: 0px"
+                                   th:value="${docdetais.containsKey(#strings.append(#strings.append(emplist.get(emp),'@'),date_))}
+                                   ? ${docdetais.get(#strings.append(#strings.append(emplist.get(emp),'@'),date_))}
+                                   : ''">
+                        </td>
+                    </th:block>
+                    <td>
+                        <input class="mod"
+                               th:name="total_+${emplist.get(emp)}"
+                               th:id = "total_+${emplist.get(emp)}"
+                               th:readonly="true"
+                               style="margin: 0px; padding: 0px; text-align: center">
+                </tr>
+                </tbody>
+            </table>
+            <table class="container-table">
+                <tr>
+                    <td>
+                        <button class="buttonlogin" formaction="/gotohello" type="submit">Вернуться назад</button>
+                    </td>
+                    <td>
+                        <button class="buttonlogin" formaction="/docs/savefueldoc" type="submit">Сохранить данные</button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </form>
+</div>
+</body>
+<script>
+    recalculateStringTotals();
+</script>
+</html>

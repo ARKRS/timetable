@@ -14,45 +14,45 @@
 
 <form class="myform" method="post">
 
-    <label class="mylabel">Изменение учетных данных <a href="/user">(назад)</a></label>
+    <label class="mylabel">Добавление нового пользователя <a href="/user">(назад)</a></label>
     <input name="_csrf" placeholder="_csrf" th:value="${_csrf.token}" type="hidden">
     <div>
-        <input name="userId" placeholder="_userid" th:value="${user.id}" type="hidden">
+        <input name="userId" placeholder="_userid"  type="hidden">
     </div>
     <div class="form-floating">
-        <input class="form-control" id="username" name="username" placeholder="Имя пользователя" th:value="${user.username}"
+        <input class="form-control" id="username" name="username" placeholder="Имя пользователя"
                type="text">
         <label for="username" width="100%">Имя пользователя</label>
     </div>
 
     <div class="form-floating mt-2">
-        <input class="form-control" id="floatingInput" name="email" placeholder="email" th:value="${user.email}"
+        <input class="form-control" id="floatingInput" name="email" placeholder="email"
                type="email">
         <label for="floatingInput">Email address</label>
     </div>
     <div class="form-floating mt-2">
-        <input class="form-control" id="password" name="password" placeholder="password" th:value="${user.password}"
+        <input class="form-control" id="password" name="password" placeholder="password"
                type="password">
         <label for="password">Пароль</label>
     </div>
 
     <div class="form-floating mt-2">
-        <input class="form-control" id="password2" name="password2" placeholder="password2" th:value="${user.password}"
+        <input class="form-control" id="password2" name="password2" placeholder="password2"
                type="password">
         <label for="password2">Повторите пароль</label>
     </div>
     <label class="mylabel">активность пользователя</label>
     <div class="form-check" style="text-align: left">
-        <input class="form-check-input" id="_useractive" name="active" th:checked="${user.active}" type="checkbox">
+        <input class="form-check-input" id="_useractive" name="active"  type="checkbox">
         <label class="form-check-label" for="_useractive" th:text="Active"></label>
     </div>
     <div class="form-label border-bottom">роли пользователя</div>
     <!--    <label class="mylabel border-bottom" ></label>-->
-    <div th:each="role : ${roles}">
+    <div th:each="role : ${T(com.timers.timetable.users.Role).values()}">
 
         <div class="form-check border-bottom" style="text-align: left">
 
-            <input class="form-check-input" id="flexCheckDefault" th:checked="${user.roles.contains(role)}" th:name="${role}"
+            <input class="form-check-input" id="flexCheckDefault" th:name="${role}"
                    type="checkbox">
             <label class="form-check-label" for="flexCheckDefault" th:text="${role}"></label>
 
@@ -60,11 +60,7 @@
 
 
     </div>
-    <button class="buttonlogin" formaction="/user/saveuser">Сохранить</button>
-    <p>
-
-    </p>
-    <button class="buttonlogin" formaction="/sendac">Отправить ссылку на восстановление пароля</button>
+    <button class="buttonlogin" formaction="/user/adduser">Сохранить</button>
     <p>
 
     </p>
