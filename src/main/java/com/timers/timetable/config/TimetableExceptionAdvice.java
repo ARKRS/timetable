@@ -1,6 +1,9 @@
 package com.timers.timetable.config;
 
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -10,9 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 @ControllerAdvice
 public class TimetableExceptionAdvice implements HandlerExceptionResolver {
 
-/*
-    @ExceptionHandler
-    public ModelAndView handleException ( Exception e){
+
+    @ExceptionHandler(value = Exception.class)
+    public ModelAndView handleException ( Exception e) throws Exception {
+
+        if (AnnotationUtils.findAnnotation
+                (e.getClass(), ResponseStatus.class) != null)
+            throw e;
 
         Response response = new Response(e.getMessage());
         ModelAndView modelAndView = new ModelAndView();
@@ -22,7 +29,7 @@ public class TimetableExceptionAdvice implements HandlerExceptionResolver {
         //return "error";
         //return  new ResponseEntity<>(response, HttpStatus.OK);
     }
-*/
+
 
     @Override
     public ModelAndView resolveException(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Object o, Exception e) {

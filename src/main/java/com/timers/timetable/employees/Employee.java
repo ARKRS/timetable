@@ -3,6 +3,7 @@ package com.timers.timetable.employees;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.timers.timetable.deptsmanagement.Department;
+import com.timers.timetable.docs.FuelType;
 
 import javax.persistence.*;
 
@@ -26,6 +27,9 @@ public class Employee {
 
     @Column(name = "carconsumption")
     private Integer carConsumption;
+
+    @Column(name = "carfueltype")
+    private FuelType fuelType;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id", referencedColumnName = "id")
@@ -75,4 +79,8 @@ public class Employee {
     public Integer getCarConsumption() {        return carConsumption;    }
 
     public void setCarConsumption(Integer carConsumption) {        this.carConsumption = carConsumption;    }
+
+    public FuelType getFuelType() {        return fuelType;    }
+
+    public void setFuelType(FuelType fuelType) {        this.fuelType = fuelType;    }
 }

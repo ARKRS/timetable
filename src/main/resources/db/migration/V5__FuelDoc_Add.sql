@@ -14,7 +14,7 @@ create table if not exists fuel_doc
 create table if not exists fuel_doc_details
 (
     fuel_doc_id          bigint    not null,
-    amount               integer   not null,
+    amount               float     not null,
     date_of_month        timestamp not null,
     employee_id          bigint    not null,
     fuel_doc_fuel_doc_id bigint,

@@ -1,8 +1,9 @@
 package com.timers.timetable.statics;
 
 import com.timers.timetable.deptsmanagement.Department;
-import com.timers.timetable.docs.DepartmentDocAdapter;
+import com.timers.timetable.deptsmanagement.DeptWrapper;
 import com.timers.timetable.repos.DeptsRepo;
+import com.timers.timetable.service.DeptService;
 import com.timers.timetable.service.UserService;
 import com.timers.timetable.users.User;
 import org.springframework.security.core.Authentication;
@@ -11,13 +12,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.ui.Model;
 
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 public class ParameterFiller {
 
-    public static void fillModelParameters(Model model, UserService userService, DeptsRepo deptsRepo) {
+
+
+    public static void  fillModelParameters(Model model, UserService userService, DeptsRepo deptsRepo, DeptService deptService) {
         //TODO переделать это! Нужно department при авторизации получить
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 //        if (auth==null)
@@ -39,10 +43,11 @@ public class ParameterFiller {
 
         model.addAttribute("isAdmin", curUser != null && curUser.isAdmin());
 
-        Department department = deptsRepo.findBySupervisor(curUser);
+
+        Department department = deptsRepo.findTop1BySupervisor(curUser);
 
         //ArrayList<String> deptlist = new ArrayList<>();
-        Map<String,String> deptlist = new HashMap<>();
+        ArrayList<DeptWrapper> deptlist = new ArrayList<>();
 
         if (department == null){
             model.addAttribute("department", null);
@@ -51,28 +56,22 @@ public class ParameterFiller {
         else {
             model.addAttribute("department", department.getDeptname());
             model.addAttribute("departmentextcode",department.getExtCode());
-            deptlist.put(department.getExtCode(),department.getDeptname());
+            deptlist.add(new DeptWrapper(department,false,0));
         }
 
         model.addAttribute("today", new SimpleDateFormat("dd.MM.yyy").format(Calendar.getInstance().getTime()));
         model.addAttribute("startMonth", new Date());
-        //RA добавляем для администратора все подразделения для просмотра табеля.
-        //Для обычного пользователя добавляем только его подразделение.
 
 
-        if (curUser!=null && curUser.isAdmin()){
-            //Iterable<Department> depts = deptsRepo.findAll();
-            List<Department> depts = deptsRepo.findAllByExtCodeIsNotNullOrderByDeptname();
+        if (model.getAttribute("isAdmin")== Boolean.TRUE){
 
-            for (Department d: depts
-                 ) {
-                if (!deptlist.containsKey(d.getExtCode())){
-                    deptlist.put(d.getExtCode(),d.getDeptname());
-                }
-            }
+            List<DeptWrapper> deptList = deptService.getDeptsHierarchy();
+            model.addAttribute("deptlist",deptList);
 
         }
-        model.addAttribute("deptlist",deptlist);
+        else
+            model.addAttribute("deptlist",deptlist);
+
 
     }
 }

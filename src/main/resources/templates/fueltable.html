@@ -25,94 +25,456 @@
     }
 });
 </script>
+<script>
+    function deleteRow(e){
+
+        let tablename = e.parentElement.parentElement.parentElement.parentElement.id;
+
+        document.getElementById(e.name.substr(e.name.lastIndexOf("__")+2)).remove();
+
+        table = document.getElementById(tablename);
+        if(table.rows.length==2){
+
+            empcode = tablename.substring(tablename.lastIndexOf("_")+1);
+
+            document.getElementById("car_model_"+empcode).removeAttribute("required");
+            document.getElementById("car_number_"+empcode).removeAttribute("required");
+            document.getElementById("car_consumption_"+empcode).removeAttribute("required");
+
+            document.getElementById("total_" + empcode).value = 0;
+
+            document.getElementById("tankreststart_"+empcode).removeAttribute("required");
+            document.getElementById("tankrestend_"+empcode).removeAttribute("required");
+
+        }
+    }
+
+    function addRow(e){
+        let empcode_ = e.name.substr(e.name.lastIndexOf("_")+1);
+        let table_ = document.getElementById("cont_table_" + empcode_);
+        let tbody  = table_.getElementsByTagName("tbody")[0];
+        let counter_ = tbody.rows.length+1;
+        let tr = document.createElement("tr");
+        tr.id = "empcode_" + empcode_ + "_string_" + counter_;
+        let td = document.createElement("td");
+        let input = document.createElement("input");
+        input.type = "date";
+        input.id   = "fueldate__" + empcode_ + "_cnt" + counter_;
+        input.setAttribute("name",input.id);
+        input.setAttribute("style","margin: 0px; padding: 0px;");
+        input.setAttribute("min",document.getElementById("start_month").value);
+        input.setAttribute("max",document.getElementById("end_month").value);
+        input.setAttribute("required",true);
+        td.appendChild(input);
+        tr.appendChild(td);
+        td = document.createElement("td");
+        input = document.createElement("input");
+        input.setAttribute("type","number");
+        input.setAttribute("id"  ,"fuelamount__" + empcode_ + "_cnt" + counter_);
+        input.setAttribute("name",input.id);
+        input.className = "mod-no-spin";
+        input.setAttribute("step","0.01");
+        input.setAttribute("style","margin: 0px; padding: 0px;");
+        input.setAttribute("required",true);
+        input.setAttribute("autocomplete",false);
+        td.appendChild(input);
+        tr.appendChild(td);
+        td = document.createElement("td");
+        td.setAttribute("style","border: none");
+        input = document.createElement("a");
+        input.setAttribute("name","killref__" + tr.id);
+        input.appendChild(document.createTextNode("удалить"));
+        input.setAttribute("onclick" , "return deleteRow(this);");
+        input.setAttribute("href","#");
+        td.appendChild(input);
+        tr.appendChild(td);
+        tbody.insertBefore(tr,e.parentElement.parentElement);
+        return false;
+    }
+
+    function addTable(e){
+
+        let background_color = "#4CAF60";
+        let i = 1;
+        <!-- super_main_href_ & EmpCode-->
+        if(e.name.lastIndexOf("_main_href_")!= 0) {
+            let empcode = e.name.substr(e.name.lastIndexOf("_main_href_")+11);
+            let detail_row = document.getElementById("row_details_emp_" + empcode);
+            if(detail_row==null){
+                let emprow = document.getElementById("row_emp_" + empcode);
+                table = document.createElement("table");
+                table.className = "container-table1";
+                table.setAttribute("id","cont_table_"+empcode);
+                table.setAttribute("name",table.id);
+                table.setAttribute("style", "font-size:small");
+                table.setAttribute("onchange","recalculateStringTotals()");
+
+                thead = document.createElement("thead");
+                row = document.createElement("tr");
+                thead.appendChild(row);
+
+                td = document.createElement("td");
+                td.appendChild(document.createTextNode("Дата заправки"));
+                td.setAttribute("style", "background: " + background_color);
+                row.appendChild(td);
+                td = document.createElement("td");
+                td.appendChild(document.createTextNode("Кол-во литров"));
+                td.setAttribute("style", "background: " + background_color);
+                row.appendChild(td);
+                td = document.createElement("td");
+                td.appendChild(document.createTextNode("Редакт."));
+                td.setAttribute("style", "background: " + background_color);
+                row.appendChild(td);
+                table.appendChild(thead);
+                tbody = document.createElement("tbody");
+                tbody.setAttribute("id","tbody_"+ empcode);
+                row = document.createElement("tr");
+                tbody.appendChild(row);
+                td = document.createElement("td");
+                td.setAttribute("colspan","3");
+                td.setAttribute("style"  ,"border:none");
+
+                a = document.createElement("a");
+                a.setAttribute("name","href_"+empcode);
+                a.setAttribute("href","#");
+                a.setAttribute("onclick","return addRow(this);");
+                a.appendChild(document.createTextNode("Добавить заправку"));
+
+                td.appendChild(a);
+                row.appendChild(td);
+                table.appendChild(tbody);
+
+                row = document.createElement("tr");
+                row.setAttribute("id","row_details_emp_" + empcode);
+
+                emptytd = document.createElement("td");
+                emptytd.setAttribute("style","border:none");
+                emptytd.setAttribute("colSpan", "6");
+                emptytd.appendChild(table);
+                row.appendChild(emptytd);
+
+                main_table = document.getElementById("fuel_table");
+                if(emprow.nextSibling){
+                    emprow.parentElement.insertBefore(row, emprow.nextSibling);
+                }
+                else{
+                    emprow.parentElement.appendChild(row);
+                }
+
+                tankreststart = document.getElementById("tankreststart_"+ empcode);
+                if(tankreststart.value == ''){
+                    tankreststart.setAttribute("value",'3');
+                }
+                tankrestend = document.getElementById("tankrestend_"+ empcode);
+                if(tankrestend.value == ''){
+                    tankrestend.setAttribute("value",'3');
+                }
+            }
+        }
+    }
+</script>
+
+<script>
+    /*for fuel table*/
+    function recalculateStringTotals(){
+        
+        tables = document.getElementsByClassName("container-table1");
+        for (let i = 0; i < tables.length; i++) {
+            
+            table = tables[i];
+            tabletotal = 0;
+
+            for (let j = 0; j < table.rows.length; j++) {
+
+                if ((/empcode_*/).test(table.rows[j].id)){
+
+                    for (let k = 0; k < table.rows[j].children.length; k++) {
+
+                        childcell = table.rows[j].children[k];
+
+                        for (let l = 0; l < childcell.children.length; l++) {
+
+                            if ((/fuelamount__*/).test(childcell.children[l].name)){
+
+                                let parsed = parseFloat(childcell.children[l].value);
+                                if (!isNaN(parsed)){
+                                    tabletotal = tabletotal + parseFloat(childcell.children[l].value);
+                                }
+                            }
+                        }
+
+                    }
+                }
+                empcode = table.id.substr(table.id.lastIndexOf("_")+1);
+                if (tabletotal!=0){
+                    document.getElementById("car_model_"+empcode).setAttribute("required",true);
+                    document.getElementById("car_number_"+empcode).setAttribute("required",true);
+                    document.getElementById("car_consumption_"+empcode).setAttribute("required",true);
+                    document.getElementById("tankreststart_"+empcode).setAttribute("required",true);
+                    document.getElementById("tankrestend_"+empcode).setAttribute("required", true);
+
+                }
+                else {
+                    document.getElementById("car_model_"+empcode).removeAttribute("required");
+                    document.getElementById("car_number_"+empcode).removeAttribute("required");
+                    document.getElementById("car_consumption_"+empcode).removeAttribute("required");
+
+                    document.getElementById("tankreststart_"+empcode).removeAttribute("required");
+                    document.getElementById("tankrestend_"+empcode).removeAttribute("required");
+
+                }
+
+                document.getElementById("total_" + empcode).value = tabletotal;
+
+            }
+
+        }
+/*        var empcode     = "";
+        var total = 0;
+        var maxdates = document.getElementById("maxdates").value;
+
+        for (var i = 2; i <document.getElementById("fuel_table").rows.length; i++){
+            var collection = document.getElementById("fuel_table").rows[i].children;
+            for (var a = 0; a<collection.length;a++){
+                if((/employeecode*!/).test(collection.item(a).id)){
+                    empcode = collection.item(a).id.substr(collection.item(a).id.lastIndexOf("_")+1);
+                    break;
+                }
+            }
+            total = 0;
+            for (var j = 1; j<maxdates;j++){
+                var elem = document.getElementById("amount_"+ ("000" + j).slice(-2) + "__" + empcode);
+                if (elem!=null){
+                    var parsed = parseInt(elem.value);
+                    if (!isNaN(parsed)){
+                        total = total + parseInt(elem.value);
+                    }
+                }
+            }
+            document.getElementById("total_"+empcode).value = total;
+            if (total!=0){
+                document.getElementById("car_model_"+empcode).setAttribute("required",true);
+                document.getElementById("car_number_"+empcode).setAttribute("required",true);
+                document.getElementById("car_consumption_"+empcode).setAttribute("required",true);
+            }
+            else {
+                document.getElementById("car_model_"+empcode).removeAttribute("required");
+                document.getElementById("car_number_"+empcode).removeAttribute("required");
+                document.getElementById("car_consumption_"+empcode).removeAttribute("required");
+            }
+        }*/
+    }
+</script>
 <script src="../static/js/doceditor.js"></script>
 <p>
-<div class="form" style="width: 90%; max-width: 1220px">
+<div class="form" style="width: 90%; max-width: 980px">
     <p class="bigmessage h2">Учет расхода ГСМ подразделения <br> [[${department_name}]], месяц [[${month}]] <br>
-        укажите количество литров в датах заправки автомобиля
     </p>
 
     <form background="#FFFFFF" class="login-form" method="post">
         <input name="_csrf" placeholder="_csrf" th:value="${_csrf.token}" type="hidden">
+        <input name="start_month" id="start_month" th:value="${#dates.format(start_month,'yyy-MM-dd')}" type="hidden">
+        <input name="end_month" id="end_month" th:value="${#dates.format(end_month,'yyy-MM-dd')}" type="hidden">
         <input name="department_id" placeholder="department_id" th:value="${department_id}" type="hidden">
         <input name="workmonth" placeholder="workmonth" th:value="${month}" type="hidden">
-        <form class="register-form">
+        <!--<form class="register-form">-->
             <input type="hidden" id="maxdates" th:value="${dates.size()}">
             <table class="container-table"
                    th:name="fuel_table"
                    th:id="fuel_table"
-                   onchange="recalculateStringTotals()"
-                   style="font-size: small">
+                   style="font-size: small;">
                 <thead>
                 <tr>
-                    <td rowspan="2">Сотрудник</td>
-                    <td colspan="3">Автомобиль</td>
-
-                    <td rowspan="2" th:each="date_ : ${dates}" th:text="${#strings.substring(date_,0,2)}"></td>
-                    <td rowspan="2"> <b>Итого</b></td>
+                    <td rowspan="2" style="width: 25ch">Сотрудник</td>
+                    <td colspan="2">Показания одометра (км)</td>
+                    <td colspan="2">Остатки в баке (л)</td>
+                    <td colspan="4">Автомобиль</td>
+                    <td rowspan="2" style="width: 12ch"> <b>Итого</b></td>
+                    <td rowspan="2" style="width: 20ch">Изменение</td>
                 </tr>
                 <tr>
-                    <td style="width: 12ch">Марка</td>
-                    <td style="width: 7ch">Гос.номер</td>
-                    <td style="width: 3ch">Расх.л</td>
+                    <td style="width: 15ch">На начало</td>
+                    <td style="width: 15ch">На конец</td>
+                    <td style="width: 15ch">На начало</td>
+                    <td style="width: 15ch">На конец</td>
+                    <td style="width: 40ch">Марка</td>
+                    <td style="width: 15ch">Гос.номер</td>
+                    <td style="width: 5ch">Расх.л</td>
+                    <td style="min-width:10ch; max-width: 10ch">Вид ГСМ</td>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="emp : ${employees}">
-                    <td th:text="${emp}"
-                        th:id="employeecode_ + ${emplist.get(emp)}"
-                        style="white-space: nowrap"/>
-                    </td>
-
-                    <td>
-                        <input class="mod-no-spin" type="text"
-                               th:name="car_model_ + ${emplist.get(emp)}" th:id="car_model_ + ${emplist.get(emp)}"
-                               th:value="${carInfo.containsKey(#strings.append('car_model_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_model_',emplist.get(emp)))} : ''"
-                               placeholder="Москвич" style="text-align: center" >
-                    </td>
-                    <td>
-                        <input class="mod-no-spin" type="text"
-                               th:name="car_number_ + ${emplist.get(emp)}"
-                               th:id="car_number_ + ${emplist.get(emp)}"
-                               th:value="${carInfo.containsKey(#strings.append('car_number_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_number_',emplist.get(emp)))} : ''"
-                               placeholder="А000АА" style="text-align: center">
-                    </td>
-                    <td>
-                        <input type="number" class="mod-no-spin" max="25"
-                               th:name="car_consumption_ + ${emplist.get(emp)}" th:id="car_consumption_ + ${emplist.get(emp)}"
-                               th:value="${carInfo.containsKey(#strings.append('car_consumption_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_consumption_',emplist.get(emp)))} : ''"
-                               placeholder="10" style="text-align: center">
-                    </td>
-                    <th:block th:each="date_ : ${dates}">
-                        <td>
-                            <input class="mod-no-spin" min="0" max="120" type="number" th:name="amount_ +${#strings.substring(date_,0,2)}  +'__'+ ${emplist.get(emp)}"
-                                   th:id="amount_ +${#strings.substring(date_,0,2)}  +'__'+ ${emplist.get(emp)}"
-                                   style="margin: 0px; padding: 0px"
-                                   th:value="${docdetais.containsKey(#strings.append(#strings.append(emplist.get(emp),'@'),date_))}
-                                   ? ${docdetais.get(#strings.append(#strings.append(emplist.get(emp),'@'),date_))}
-                                   : ''">
+                <th:block th:each="emp : ${employees}">
+                    <tr th:id="row_emp_ + ${emplist.get(emp)}">
+                        <td th:text="${emp}"
+                            th:id="employeecode_ + ${emplist.get(emp)}"
+                            style="white-space: nowrap; font-weight: bold"/>
                         </td>
-                    </th:block>
-                    <td>
-                        <input class="mod"
-                               th:name="total_+${emplist.get(emp)}"
-                               th:id = "total_+${emplist.get(emp)}"
-                               th:readonly="true"
-                               style="margin: 0px; padding: 0px; text-align: center">
-                </tr>
+                        <td>
+                            <input class="mod-no-spin" type="number"
+                                   th:name="odo_start_ + ${emplist.get(emp)}" th:id="car_model_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('odo_start_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('odo_start_',emplist.get(emp)))} : ''"
+                                   placeholder="0" style="text-align: center"
+                                   title="Приблизительный пробег автомобиля на начало периода, необходим для расчета пробега автомобиля в день">
+                        </td>
+                        <td>
+                            <input class="mod-no-spin" type="number"
+                                   th:name="odo_end_ + ${emplist.get(emp)}" th:id="odo_end_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('odo_end_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('odo_end_',emplist.get(emp)))} : ''"
+                                   placeholder="0" style="text-align: center"
+                                   title="Приблизительный пробег автомобиля на конец периода, необходим для расчета пробега автомобиля в день">
+                        </td>
+                        <td>
+                            <input class="mod-no-spin" type="number"
+                                   th:name="tankreststart_ + ${emplist.get(emp)}" th:id="tankreststart_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('tankreststart_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('tankreststart_',emplist.get(emp)))} : ''"
+                                   placeholder="0" style="text-align: center"
+                                   title="Приблизительный остаток в баке на начало месяца (в целых литрах)">
+                        </td>
+                        <td>
+                            <input class="mod-no-spin" type="number"
+                                   th:name="tankrestend_ + ${emplist.get(emp)}" th:id="tankrestend_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('tankrestend_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('tankrestend_',emplist.get(emp)))} : ''"
+                                   placeholder="0" style="text-align: center"
+                                   title="Приблизительный остаток в баке на конец месяца (в целых литрах)">
+                        </td>
+
+                        <td>
+                            <input class="mod-no-spin" type="text"
+                                   th:name="car_model_ + ${emplist.get(emp)}" th:id="car_model_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('car_model_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_model_',emplist.get(emp)))} : ''"
+                                   placeholder="" style="text-align: center"
+                                   title="Марка и модель автомобиля, данные необходимы для заполнения путевого листа за месяц по маршруту">
+                        </td>
+                        <td>
+                            <input class="mod-no-spin" type="text"
+                                   th:name="car_number_ + ${emplist.get(emp)}"
+                                   th:id="car_number_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('car_number_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_number_',emplist.get(emp)))} : ''"
+                                   placeholder="А000АА" style="text-align: center"
+                                   title="Гос.номер автомобиля, данные необходимы для заполнения путевого листа за месяц по маршруту">
+                        </td>
+                        <td>
+                            <input type="number" class="mod-no-spin" max="25"
+                                   th:name="car_consumption_ + ${emplist.get(emp)}" th:id="car_consumption_ + ${emplist.get(emp)}"
+                                   th:value="${carInfo.containsKey(#strings.append('car_consumption_',emplist.get(emp)))} ? ${carInfo.get(#strings.append('car_consumption_',emplist.get(emp)))} : ''"
+                                   placeholder="10" style="text-align: center"
+                                   title="Примерный расход автомобиля л/100км, данные необходимы для заполнения путевого листа за месяц по маршруту">
+                        </td>
+                        <td>
+                            <select  class="mod-no-spin"
+                                     th:name="fueltype_ + ${emplist.get(emp)}" th:id="fueltype_ + ${emplist.get(emp)}">
+                                   <th:block th:each="value: ${T(com.timers.timetable.docs.FuelType).values()}">
+                                       <th:block th:if = "${value.toString() == carInfo.get(#strings.append('fueltype_',emplist.get(emp)))}">
+                                           <option th:text="${value}" th:value="${value}" th:selected="${value}"></option>
+                                       </th:block>
+                                       <th:block th:unless = "${value.toString() == carInfo.get(#strings.append('fueltype_',emplist.get(emp)))}">
+                                           <option th:text="${value.toString()}" th:value="${value}"></option>
+                                       </th:block>
+                                   </th:block>
+                            </select>
+                        </td>
+                         <td>
+                            <input class="mod"
+                                   th:name="total_+${emplist.get(emp)}"
+                                   th:id = "total_+${emplist.get(emp)}"
+                                   th:step="0.01"
+                                   th:readonly="true"
+                                   style="margin: 0px; padding: 0px; text-align: center">
+                        </td>
+                        <td>
+                            <a th:name = "super_main_href_+ ${emplist.get(emp)}" href = "#" onclick = "return addTable(this);">есть заправки</a>
+                        </td>
+                    </tr>
+                    <div th:if ="${stored_details.contains(emplist.get(emp))}">
+                        <tr th:id="row_details_emp_ + ${emplist.get(emp)}">
+                            <td style="border:none" colspan="6">
+                                <table class="container-table1"
+                                       th:id="cont_table_ + ${emplist.get(emp)}"
+                                       th:name="cont_table_ + ${emplist.get(emp)}"
+                                       style="font-size:small"
+                                       onchange="recalculateStringTotals()">
+                                    <thead>
+                                    <tr>
+                                        <td style="background: #4CAF60">
+                                            Дата заправки
+                                        </td>
+                                        <td style="background: #4CAF60">
+                                            Кол-во литров
+                                        </td>
+                                        <td style="background: #4CAF60">
+                                            Редакт.
+                                        </td>
+                                    </tr>
+                                    </thead>
+                                    <tbody th:id="tbody_ + ${emplist.get(emp)}">
+                                    <th:block th:each="docdet,iter: ${docdetais}">
+                                        <th:block th:if="${#strings.contains(docdet.getKey(),emplist.get(emp))}">
+
+                                            <tr th:id="empcode_ + ${emplist.get(emp)} + _string_+ ${iter.count}">
+                                                <td>
+                                                    <input type="date"
+                                                           th:id="fueldate__ + ${emplist.get(emp)} + _cnt + ${iter.count}"
+                                                           th:name="fueldate__ + ${emplist.get(emp)} + _cnt+ ${iter.count}"
+                                                           style="margin: 0px; padding: 0px;"
+                                                           th:value="${#dates.format(docdetais_dates.get(docdet.getKey()),'yyy-MM-dd')}"
+                                                           th:min="${#dates.format(start_month,'yyy-MM-dd')}"
+                                                           th:max="${#dates.format(end_month,'yyy-MM-dd')}"
+                                                           required = "true">
+                                                </td>
+                                                <td>
+                                                    <input type="number"
+                                                           th:id="fuelamount__ + ${emplist.get(emp)} + _cnt+ ${iter.count}"
+                                                           th:name="fuelamount__ + ${emplist.get(emp)} + _cnt+ ${iter.count}"
+                                                           th:value="${docdet.getValue()}"
+                                                           class="mod-no-spin"
+                                                           step="0.01"
+                                                           style="margin: 0px; padding: 0px;"
+                                                           required = "true"
+                                                           autocomplete="false"
+                                                    >
+                                                </td>
+                                                <td style="border: none">
+                                                    <a th:name="killref__empcode_ + ${emplist.get(emp)} + _string_+ ${iter.count}" onclick="return deleteRow(this);" href="#">
+                                                        удалить
+                                                    </a>
+                                                </td>
+                                            </tr>
+
+                                        </th:block>
+                                    </th:block>
+
+                                    <tr>
+                                        <td colspan="3" style="border:none">
+                                            <a th:name="href_ + ${emplist.get(emp)}" href="#" onclick="return addRow(this);">Добавить заправку</a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </td>
+                        </tr>
+                    </div>
+                </th:block>
                 </tbody>
             </table>
             <table class="container-table">
                 <tr>
                     <td>
-                        <button class="buttonlogin" formaction="/gotohello" type="submit">Вернуться назад</button>
+                        <button class="buttonlogin"
+                                formaction="/gotohello"
+                                title="Не сохранять данные"
+                                type="submit">Вернуться назад
+                        </button>
                     </td>
                     <td>
-                        <button class="buttonlogin" formaction="/docs/savefueldoc" type="submit">Сохранить данные</button>
+                        <button class="buttonlogin"
+                                formaction="/docs/savefueldoc"
+                                type="submit"
+                                title="Сохранить данные, вернуться в основное меню">Сохранить данные</button>
                     </td>
                 </tr>
             </table>
-        </form>
+        <!--</form>-->
     </form>
 </div>
 </body>

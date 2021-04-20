@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
 <head>
     <title>Записка по личному составу</title>
@@ -24,46 +23,78 @@
         </div>
         <div th:if ="${department==null}">
             <p class="message_15px">Вам не назначено подразделение.</p>
-
         </div>
         <p class="message_15px">Подразделение:</p>
 
-        <select style="margin: 0px;  max-width: 176px"
-                th:name="dept2table"
-                th:id="dept2table">
-            <div th:if="${isAdmin==true}">
-                <option th:each="dept : ${deptlist}"
-                        th:selected="${dept.value==department}"
-                        th:text="${dept.value}"
-                        th:value="${dept.key}"></option>
-            </div>
-            <div th:unless="${isAdmin==true}">
-                <option
-                        selected="${department}"
-                        th:text="${department}"
-                        th:value="${departmentextcode}"></option>
-            </div>
-        </select>
-        <div th:if="${department!=null || isAdmin ==true}">
-            <p class="message_15px">Данные сотрудников за</p>
-                <table style="margin-left: auto; margin-right: auto">
-                    <tr>
-                        <td>
-                            <input style="margin: 0px" type="date" id="today" th:value="${#dates.format(startMonth,'yyy-MM-dd')}" th:readonly="${isAdmin==false}">
-                        </td>
-                        <td>
-                            <button class="buttonlogin" formaction="/docs" th:method="get">изменить</button>
+        <table style="margin-left: auto; margin-right: auto">
+            <tr>
+                <td colspan="2">
+                    <select style="margin: 0px"
+                            th:name="dept2table"
+                            th:id="dept2table">
+                        <div th:if="${isAdmin==true}">
+                            <option th:each="deptwrapper : ${deptlist}"
+                                    th:selected="${deptwrapper.getDepartment().getDeptname() == department}"
+                                    th:text="${deptwrapper.isGroup()==true ? deptwrapper.getDepartment().getDeptname(): #strings.append('-  ',deptwrapper.getDepartment().getDeptname())}"
+                                    th:value="${deptwrapper.getDepartment().getExtCode()}"
+                                    th:disabled="${deptwrapper.isGroup()}"
+                                    th:style="${deptwrapper.isGroup()==true? 'font-weight: bold; text-color: #198754' : '' }">
+                            </option>
+
+                        </div>
+                        <div th:unless="${isAdmin==true}">
+                            <option
+                                    selected="${department}"
+                                    th:text="${department}"
+                                    th:value="${departmentextcode}"></option>
+                        </div>
+                    </select>
+                </td>
+
+            </tr>
+            <!--</table>-->
+
+            <div th:if="${department!=null || isAdmin ==true}">
+                <tr>
+                    <td colspan="2"><p class="message_15px">Данные сотрудников за</p>
+                    </td>
+                </tr>
+                <!--<table style="margin-left: auto; margin-right: auto">-->
+                <tr>
+                    <td>
+                        <input style="margin: 0px" type="date" name="today" id="today" th:value="${#dates.format(startMonth,'yyy-MM-dd')}" th:readonly="${isAdmin==false}">
+                    </td>
+                    <td>
+                        <button class="buttonlogin" formaction="/docs" th:method="get">изменить</button>
+                    </td>
+                </tr>
+                <th:block th:if="${isAdmin == true}">
+                    <tr style="height: 10px">
+                        <td colspan="2">
+                            <p></p>
                         </td>
                     </tr>
-                </table>
-            <p class="message_15px">Табель подразделения за:</p>
-            <table style="margin-left: auto; margin-right: auto">
+                    <tr>
+                        <td colspan="2">
+                            <button class="buttonlogin" formaction="/docs/bigtable">Показать свод за день</button>
+                        </td>
+                    </tr>
+                    <p></p>
+                </th:block>
+
+                <!--</table>-->
+                <tr>
+                    <td colspan="2">
+                        <p class="message_15px">Табель подразделения за:</p>
+                    </td>
+                </tr>
+                <!--<table style="margin-left: auto; margin-right: auto">-->
                 <tr>
                     <td>
                         <input style="margin: 0px; max-width: 176px" type="month"
                                th:name="date2table"
                                th:readonly="${isAdmin==false}"
-                               th:value="${#dates.format(startMonth,'YYYY-MM')}">
+                               th:value="${#dates.format(startMonth,'yyyy-MM')}">
                     </td>
                     <td>
                         <div th:if="${department!=null || isAdmin ==true}">
@@ -80,7 +111,7 @@
                         <input style="margin: 0px; max-width: 176px" type="month"
                                th:name="date2fueltable"
                                th:readonly="${isAdmin==false}"
-                               th:value="${#dates.format(startMonth,'YYYY-MM')}">
+                               th:value="${#dates.format(startMonth,'yyyy-MM')}">
                     </td>
                     <td>
                         <div th:if="${department!=null || isAdmin ==true}">
@@ -89,13 +120,17 @@
                     <td>
                 </tr>
 
-            </table>
+                <!--</table>-->
 
-        </div>
-        <p>
+                <tr>
+                    <td colspan="2">
+                        <button class="buttonlogin" type="submit">Выход</button>
 
-        </p>
-        <button class="buttonlogin" type="submit">Выход</button>
+                    </td>
+                </tr>
+            </div>
+        </table>
+
     </form>
 </div>
 

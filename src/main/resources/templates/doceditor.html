@@ -60,27 +60,43 @@
                         </td>
                         <td rowspan="1">
                             <input class="mod" max="19" min="8"
-                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
-                                   th:id="beginhour_ +${employee_str.get('employee_index')}" th:name="beginhour_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('beginhour')}"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).REMOTE
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).LATE}? 'true' : 'false'"
+                                   th:id="beginhour_ +${employee_str.get('employee_index')}"
+                                   th:name="beginhour_ +${employee_str.get('employee_index')}"
+                                   th:value="${employee_str.get('beginhour')}"
                                    type="number"/>
                         </td>
                         <td rowspan="1">
                             <input class="mod" max="59"
                                    min="0"
-                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
-                                   th:id="beginminutes_ +${employee_str.get('employee_index')}" th:name="beginminutes_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('beginminutes')}"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).REMOTE
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).LATE} ? 'true' : 'false'"
+                                   th:id="beginminutes_ +${employee_str.get('employee_index')}"
+                                   th:name="beginminutes_ +${employee_str.get('employee_index')}"
+                                   th:value="${employee_str.get('beginminutes')}"
                                    type="number"/>
                         </td>
                         <td rowspan="1">
                             <input class="mod" max="19" min="8"
-                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
-                                   th:id="endhour_ +${employee_str.get('employee_index')}" th:name="endhour_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('endhour')}"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).REMOTE
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).LATE} ? 'true' : 'false'"
+                                   th:id="endhour_ +${employee_str.get('employee_index')}"
+                                   th:name="endhour_ +${employee_str.get('employee_index')}"
+                                   th:value="${employee_str.get('endhour')}"
                                    type="number"/>
                         </td>
                         <td rowspan="1">
                             <input class="mod" max="59" min="0"
-                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT} ? 'true' : 'false'"
-                                   th:id="endminutes_ +${employee_str.get('employee_index')}" th:name="endminutes_ +${employee_str.get('employee_index')}" th:value="${employee_str.get('endminutes')}"
+                                   th:attr="disabled=${employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).PART_ABSENT
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).REMOTE
+                                   && employee_str.get('status')!=T(com.timers.timetable.employees.EmployeeStatus).LATE} ? 'true' : 'false'"
+                                   th:id="endminutes_ +${employee_str.get('employee_index')}"
+                                   th:name="endminutes_ +${employee_str.get('employee_index')}"
+                                   th:value="${employee_str.get('endminutes')}"
                                    type="number"/>
                         </td>
                     </tr>

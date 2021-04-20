@@ -4,14 +4,16 @@ import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
+/*
 @RestController
 public class MyErrorController implements ErrorController {
 
     private static final String PATH = "/error";
 
     @RequestMapping(value = PATH)
-    public String error(Model model) {
+    public String error(ModelAndView modelAndView) {
 
         return "Error handling";
     }
@@ -21,3 +23,4 @@ public class MyErrorController implements ErrorController {
         return PATH;
     }
 }
+*/

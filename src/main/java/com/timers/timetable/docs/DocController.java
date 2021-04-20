@@ -1,9 +1,14 @@
 package com.timers.timetable.docs;
 
 import com.timers.timetable.deptsmanagement.Department;
+import com.timers.timetable.deptsmanagement.DeptWrapper;
 import com.timers.timetable.employees.Employee;
 import com.timers.timetable.employees.EmployeeStatus;
 import com.timers.timetable.repos.*;
+import com.timers.timetable.service.DeptService;
+import com.timers.timetable.service.DocService;
+import com.timers.timetable.service.UserService;
+import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.User;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +41,12 @@ public class DocController {
     private FuelDocRepo fuelDocRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private DeptService deptService;
+    @Autowired
+    private DocService docService;
+    @Autowired
+    private UserService userService;
 //    @Autowired
 //    private AbsentPeriodRepo absentPeriodRepo;
     //Подготовка вывода табеля на указанный месяц
@@ -59,7 +70,7 @@ public class DocController {
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy");
         ArrayList<String> datelist = new ArrayList<>();
         Date it = month;
-        while (it.getTime()<endOfmonth.getTime()){
+        while (it.getTime()<=endOfmonth.getTime()){
 
 
             dates.put(formatter.format(it), new HashMap());
@@ -100,6 +111,40 @@ public class DocController {
         return "table";
     }
 
+    @PostMapping("/bigtable")
+    public String showBigTable(Model model, @RequestParam Map<String,String> form){
+
+        List<DeptWrapper> deptlist = deptService.getDeptsHierarchy();
+        Date date = new Date();
+        try {
+            date = new SimpleDateFormat("yyyy-MM-dd").parse(form.get("today"));
+        }
+        catch (ParseException e){
+
+        }
+        HashMap<Employee, DepartmentDoc.AbsentPeriod> employees = new HashMap<>();
+        Map<Department,DepartmentDoc> docMap = docService.getDocMapWithDepartments(date);
+        for ( Map.Entry<Department,DepartmentDoc> entry: docMap.entrySet()
+             ) {
+
+            for (Map.Entry<Employee, DepartmentDoc.AbsentPeriod> emp: entry.getValue().getAbsentPeriods().entrySet()
+                 ) {
+                employees.put(emp.getKey(),emp.getValue());
+            }
+        }
+        Map<Department,List<Employee>> deptmapwithemps = deptService.getDepartmentMapWithEmployees();
+
+        model.addAttribute("deptlist", deptlist);
+
+        model.addAttribute("docmap",docMap);
+
+        model.addAttribute("deptmapwithemps",deptmapwithemps);
+
+        model.addAttribute("today",date);
+
+        model.addAttribute("employees",employees);
+        return "tablebig";
+    }
 
     @PostMapping("/fuel")
     public String showFuelTable(Model model, @RequestParam Map<String,String> form){
@@ -118,6 +163,8 @@ public class DocController {
         Department curdept = deptsRepo.findByExtCode(form.get("dept2table"));
         List<FuelDoc> docList = fuelDocRepo.findAllByWorkmonthBetweenAndDepartmentEquals(month, endOfmonth,curdept);
 
+        model.addAttribute("start_month",month);
+        model.addAttribute("end_month", endOfmonth);
         HashMap<String, HashMap> dates = new HashMap<>();
         SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyy");
         ArrayList<String> datelist = new ArrayList<>();
@@ -152,20 +199,42 @@ public class DocController {
             if (emp.getCarConsumption()!=null){
                 carInfo.put("car_consumption_" + empCode, emp.getCarConsumption().toString());
             }
+
+            if (emp.getFuelType()!=null){
+                carInfo.put("car_fueltype_"+empCode, emp.getFuelType().toString());
+            }
         }
 
         Collections.sort(employees);
         //* formatted date <empcode,amount> *//
-        Map<String,Integer> docdetais = new HashMap<>();
+        Map<String,Float> docdetais = new TreeMap<>();
+        Map<String,Date>  docdetais_dates = new TreeMap<>();
 
+        List<String> stored_details = new ArrayList<>();
         for (FuelDoc doc: docList) {
 
             for (FuelDocDetails fdd : doc.getFuelDocDetails()
                  ) {
                 //восьмизначный код сотрудника + форматированная дата
-                docdetais.put(String.format("%08d",fdd.getEmployee().getEmployee_id())+"@"+formatter.format(fdd.getDateOfMonth()),fdd.getAmount());
+                String empcode = String.format("%08d",fdd.getEmployee().getEmployee_id());
+                //добавил еще один хашмап, чтобы хранить там даты. Не получилось в тимлифе конвертировать строку в дату.
+                docdetais.put(empcode+"@"+formatter.format(fdd.getDateOfMonth()),fdd.getAmount());
+                docdetais_dates.put(empcode+"@"+formatter.format(fdd.getDateOfMonth()),fdd.getDateOfMonth());
 
+                if (!stored_details.contains(empcode)){
+                    stored_details.add(empcode);
+                }
 
+            }
+            for (FuelDocCarDetails fdd : doc.getFuelDocCarDetails()){
+
+               carInfo.put("odo_start_" + String.format("%08d",fdd.getEmployee().getEmployee_id()), String.valueOf(fdd.getStartOdometerData()));
+               carInfo.put("odo_end_" + String.format("%08d",fdd.getEmployee().getEmployee_id()), String.valueOf(fdd.getEndOdometerData()));
+
+               carInfo.put("tankreststart_" + String.format("%08d",fdd.getEmployee().getEmployee_id()), String.valueOf(fdd.getTankreststart()));
+               carInfo.put("tankrestend_" + String.format("%08d",fdd.getEmployee().getEmployee_id()), String.valueOf(fdd.getTankreststart()));
+
+               carInfo.put("fueltype_" + String.format("%08d",fdd.getEmployee().getEmployee_id()), String.valueOf(fdd.getFuelType()));
 
             }
         }
@@ -179,13 +248,15 @@ public class DocController {
         model.addAttribute("department_name", curdept.getDeptname());
         model.addAttribute("department_id", curdept.getId());
         model.addAttribute("month", new SimpleDateFormat("LLLL yyyy г.").format(month));
+        model.addAttribute("stored_details",stored_details);
+        model.addAttribute("docdetais_dates", docdetais_dates);
 
         return "fueltable";
 
     }
 
     @PostMapping("/savefueldoc")
-    public String savefuelDoc(@RequestParam Map<String, String> form) {
+    public String savefuelDoc(@RequestParam Map<String, String> form, Model model) throws ParseException {
 
         Optional departmentOptional = deptsRepo.findById(Long.parseLong(form.get("department_id")));
 
@@ -214,17 +285,20 @@ public class DocController {
             }
         }
         Map<String,Employee> employeeMap = new HashMap<>();
-        Map<Employee,Map<Date,Integer>> docdetails= new HashMap<>();
+        Map<Employee,Map<Date,Float>> docdetails= new HashMap<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         for (Map.Entry<String,String> el: form.entrySet()
              ) {
 
-            if (el.getKey().contains("amount")){
+            if (el.getKey().contains("fuelamount")){
 
                 if (!el.getValue().equals("")){
 
-                    String empcode = el.getKey().substring(el.getKey().lastIndexOf("__")+2);
+                    String empcode = el.getKey().substring(el.getKey().lastIndexOf("__")+2).substring(0,8);
 
-                    String datecode = el.getKey().replace("__"+empcode,"");
+                    String datecode  = form.get("fueldate__" + empcode + el.getKey().substring(el.getKey().lastIndexOf(empcode)+8));
+
+                    /*String datecode = el.getKey().replace("__"+empcode,"");*/
                     datecode = datecode.substring(datecode.lastIndexOf("_")+1);
                     Employee employee = employeeMap.get(empcode);
                     if (employee==null){
@@ -232,15 +306,16 @@ public class DocController {
                         employeeMap.put(empcode,employee);
                     }
 
-                    Map<Date,Integer> empDetails = docdetails.get(employee);
+                    Map<Date,Float> empDetails = docdetails.get(employee);
                     if (empDetails==null){
                         docdetails.put(employee,new HashMap<>());
                         empDetails = docdetails.get(employee);
                     }
-                    calendar.setTime(workdate);
-                    calendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(datecode));
 
-                    empDetails.put(calendar.getTime(),Integer.parseInt(el.getValue()));
+                    /*calendar.setTime(workdate);
+                    calendar.set(Calendar.DAY_OF_MONTH,Integer.parseInt(datecode));*/
+
+                    empDetails.put(sdf.parse(datecode),Float.parseFloat(el.getValue()));
 
                     int j = 0;
                     j++;
@@ -249,18 +324,20 @@ public class DocController {
         }
 
         ArrayList<FuelDocDetails> fddlist = new ArrayList<>();
+        ArrayList<FuelDocCarDetails> docCarDetails = new ArrayList<>();
 
-        for (Map.Entry<Employee,Map<Date,Integer>> emp: docdetails.entrySet()
+
+        for (Map.Entry<Employee,Map<Date,Float>> emp: docdetails.entrySet()
              ) {
             //--> Начало: Обрабатываем данные по автомобилю сотрудника
             Employee temp_emp = emp.getKey();
             String temp_emp_code = String.format("%08d",temp_emp.getEmployee_id());
             boolean empProcessed = false;
 
-            if (empProcessed ==false) {
+            if (!empProcessed) {
                 String car_model = form.get("car_model_" + temp_emp_code);
                 String car_number = form.get("car_number_" + temp_emp_code);
-
+                String fuel_type  = form.get("fueltype_" + temp_emp_code);
                 Integer car_consumption = 0;
                 try {
                     car_consumption = Integer.parseInt(form.get("car_consumption_" + temp_emp_code));
@@ -280,37 +357,112 @@ public class DocController {
                         temp_emp.setCarNumber(car_number);
                         needSaving = true;
                     }
-                    if (temp_emp.getCarConsumption()==null ||(temp_emp.getCarConsumption() != car_consumption)) {
+                    if (temp_emp.getCarConsumption()==null ||(!temp_emp.getCarConsumption().equals(car_consumption))) {
                         temp_emp.setCarConsumption(car_consumption);
                         needSaving = true;
                     }
-                    if (needSaving == true)
+                    if (temp_emp.getFuelType()==null || (temp_emp.getFuelType()!= FuelType.fromString(fuel_type))) {
+                        temp_emp.setFuelType(FuelType.fromString(fuel_type));
+                        needSaving = true;
+                    }
+
+                    if (needSaving)
                         employeeRepo.save(temp_emp);
                 }
                 empProcessed = true;
             }
             //--> Конец: Обрабатываем данные по автомобилю сотрудника
 
-            for (Map.Entry<Date,Integer> date_ : emp.getValue().entrySet()
+            for (Map.Entry<Date,Float> date_ : emp.getValue().entrySet()
                  ) {
 
                 FuelDocDetails fdd = new FuelDocDetails(curDoc,emp.getKey(),date_.getKey(),date_.getValue());
                 fddlist.add(fdd);
             }
+
+
         }
 
+        for (Map.Entry<String,Employee> employeeEntry: employeeMap.entrySet()){
+
+            String odo_start = form.get("odo_start_"+ String.format("%08d",employeeEntry.getValue().getEmployee_id()));
+            int odostart;
+            if (odo_start.equals("")){
+                odostart = 0;
+            }
+            else {
+                odostart = Integer.parseInt(odo_start);
+            }
+            String odo_end = form.get("odo_end_"+ String.format("%08d",employeeEntry.getValue().getEmployee_id()));
+            int odoend;
+            if (odo_end.equals("")){
+                odoend = 0;
+            }
+            else {
+                odoend = Integer.parseInt(odo_end);
+            }
+
+            String tankreststart_ = form.get("tankreststart_"+ String.format("%08d",employeeEntry.getValue().getEmployee_id()));
+            int tankreststart;
+            if (tankreststart_.equals("")){
+                tankreststart = 0;
+            }
+            else {
+                tankreststart = Integer.parseInt(tankreststart_);
+            }
+
+            String tankrestend_ = form.get("tankrestend_"+ String.format("%08d",employeeEntry.getValue().getEmployee_id()));
+            int tankrestend;
+            if (tankrestend_.equals("")){
+                tankrestend = 0;
+            }
+            else {
+                tankrestend = Integer.parseInt(tankrestend_);
+            }
+
+            String fueltypestr = form.get("fueltype_"+ String.format("%08d",employeeEntry.getValue().getEmployee_id()));
+
+            FuelType fueltype = FuelType.fromString(fueltypestr);
+
+
+
+            docCarDetails.add(new FuelDocCarDetails(curDoc,
+                    employeeEntry.getValue(),
+                    odostart,
+                    odoend,
+                    tankreststart,
+                    tankrestend,
+                    fueltype));
+        }
         curDoc.setFuelDocDetails(fddlist);
 
-        fuelDocRepo.save(curDoc);
+        curDoc.setFuelDocCarDetails(docCarDetails);
+        if (curDoc.getFuelDocCarDetails().size()!=0 && curDoc.getFuelDocDetails().size()!=0)
+            fuelDocRepo.save(curDoc);
 
-        return "redirect:/gotohello";
+        //return "redirect:/gotohello";
 
+        ParameterFiller.fillModelParameters(model,userService,deptsRepo,deptService);
+
+        if (model.getAttribute("isAdmin") == Boolean.TRUE){
+            Department dept_ = deptsRepo.findById(Long.parseLong(form.get("department_id"))).get();
+            if(dept_!=null) {
+                model.addAttribute("department", dept_.getDeptname());
+                model.addAttribute("departmentextcode",  dept_.getExtCode());
+            }
+            else {
+                model.addAttribute("department", null);
+                model.addAttribute("departmentextcode",  null);
+            }
+            model.addAttribute("startMonth", sdf.parse(form.get("start_month")));
+        }
+        return "hello";//"redirect:/gotohello";
 
     }
 
 
     @PostMapping
-    public String createDoc(Model model, @RequestParam("dept2table") String dept2table) throws NotFoundException, ParseException {
+    public String createDoc(Model model, @RequestParam("dept2table") String dept2table, @RequestParam("today") String selectedDay) throws NotFoundException, ParseException {
 
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null)
@@ -325,9 +477,9 @@ public class DocController {
             username = obj.toString();
         }
         User curUser = userRepo.findByUsernameAndActive(username, true);
-
+        Date selectedDay_ = new SimpleDateFormat("yyyy-MM-dd").parse(selectedDay);
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd.MM.yyy");
-        Date today = simpleDateFormat.parse(simpleDateFormat.format(new Date()));
+        Date today = simpleDateFormat.parse(simpleDateFormat.format(selectedDay_));
 
         Department department = deptsRepo.findByExtCode(dept2table);
 
@@ -346,6 +498,10 @@ public class DocController {
         ) {
             Map<String, Object> map1 = new HashMap<>();
             if (curDoc != null) {
+/*
+                Hibernate.initialize(curDoc.getAbsentPeriods());
+                Hibernate.initialize(curDoc.getEmployees());
+*/
                 EmployeeStatus curStatus = curDoc.getEmployees().get(emp);
                 DepartmentDoc.AbsentPeriod absentPeriod = curDoc.getAbsentPeriods().get(emp);
                 if (curStatus != null) {
@@ -446,7 +602,7 @@ public class DocController {
                 int endminutes = 0;
 
                 //
-                if (employeeStatus.equals(EmployeeStatus.PART_ABSENT)) {
+                if (employeeStatus.equals(EmployeeStatus.PART_ABSENT) || employeeStatus.equals(EmployeeStatus.REMOTE)) {
 
                     beginhour = Integer.parseInt(form.get("beginhour_" + strEmpId));
                     beginminutes = Integer.parseInt(form.get("beginminutes_" + strEmpId));
@@ -463,6 +619,7 @@ public class DocController {
 
         curDoc.setEmployees(employeeStatusMap);
         curDoc.setAbsentPeriods(absentPeriodMap);
+        curDoc.setDocUploaded(false);
         docsRepo.save(curDoc);
 
         return "redirect:/gotohello";

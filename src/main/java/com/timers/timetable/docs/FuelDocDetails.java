@@ -1,7 +1,6 @@
 package com.timers.timetable.docs;
 
 import com.timers.timetable.employees.Employee;
-import org.eclipse.sisu.wire.WireModule;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,7 +26,7 @@ public class FuelDocDetails {
     private Date dateOfMonth;
 
     @Column(name = "Amount", nullable = false)
-    private int amount;
+    private float amount;
 
     public Date getDateOfMonth() {
         return dateOfMonth;
@@ -37,7 +36,7 @@ public class FuelDocDetails {
         this.dateOfMonth = dateOfMonth;
     }
 
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
@@ -64,7 +63,7 @@ public class FuelDocDetails {
         this.employee = employee;
     }
 
-    public FuelDocDetails(FuelDoc fuelDoc, Employee employee, Date dateOfMonth, int amount) {
+    public FuelDocDetails(FuelDoc fuelDoc, Employee employee, Date dateOfMonth, Float amount) {
         this.fuelDoc = fuelDoc;
         this.employee = employee;
         this.dateOfMonth = dateOfMonth;

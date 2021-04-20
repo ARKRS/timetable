@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface DocsRepo extends CrudRepository<DepartmentDoc, Long> {
 
@@ -18,7 +19,10 @@ public interface DocsRepo extends CrudRepository<DepartmentDoc, Long> {
 
     List<DepartmentDoc> findAllByWorkdateBetweenAndDepartmentEquals(Date startDate,Date endDate,Department department);
 
-    @Query("SELECT docid from DepartmentDoc where doc_UUID = :doc_UUID")
-    Long findByDoc_UUID(@Param("doc_UUID") String doc_UUID);
+    List<DepartmentDoc> findAllByWorkdate(Date workdate);
+
+ //   DepartmentDoc findByDoc_UUIDEquals(String doc_UUID);
+    @Query(value = "SELECT docs.* from department_doc as docs where docs.doc_UUID = :doc_UUID",nativeQuery = true)
+    List<DepartmentDoc> findByDoc_UUID(@Param("doc_UUID") String doc_UUID);
 
 }

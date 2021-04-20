@@ -1,6 +1,7 @@
 package com.timers.timetable.controller.usermanagement;
 
 import com.timers.timetable.repos.DeptsRepo;
+import com.timers.timetable.service.DeptService;
 import com.timers.timetable.service.UserService;
 import com.timers.timetable.statics.ParameterFiller;
 import com.timers.timetable.users.User;
@@ -24,6 +25,8 @@ public class RegistrationController {
     private UserService userService;
     @Autowired
     private DeptsRepo deptsRepo;
+    @Autowired
+    private DeptService deptService;
 
     @GetMapping("/registration")
     public String registration(Model model) {
@@ -73,7 +76,7 @@ public class RegistrationController {
     @GetMapping("/hello")
     public String hello(Model model) {
 
-        ParameterFiller.fillModelParameters(model, userService, deptsRepo);
+        ParameterFiller.fillModelParameters(model, userService, deptsRepo, deptService);
         return "hello";
     }
 

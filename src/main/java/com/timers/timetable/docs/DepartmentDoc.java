@@ -20,16 +20,17 @@ public class DepartmentDoc {
     private Department department;
     private Date workdate;
     private Boolean docUploaded;
+    @Column(name = "doc_UUID")
     private String doc_UUID;
 
 
-    @ElementCollection
+    @ElementCollection//(fetch = FetchType.EAGER)
     @CollectionTable(name = "doc_employees")
     @MapKeyColumn(name = "employee_col")
     @Column(name = "status_col")
     private Map<Employee, EmployeeStatus> employees;
 
-    @ElementCollection
+    @ElementCollection//(fetch = FetchType.EAGER)
     @CollectionTable(name = "doc_employees_new")
     @MapKeyColumn(name = "employee_col")
     private Map<Employee, AbsentPeriod> absentPeriods;

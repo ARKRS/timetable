@@ -19,12 +19,16 @@ public class FuelDoc {
     private Department department;
     private Date workmonth;
     private Boolean docUploaded;
+    @Column(name = "doc_UUID")
     private String doc_UUID;
 
     @ElementCollection
     @CollectionTable(name = "fuel_doc_details",joinColumns = @JoinColumn(name = "Fuel_doc_id"))
     private List<FuelDocDetails> fuelDocDetails;
 
+    @ElementCollection
+    @CollectionTable(name = "fuel_docs_cars_details",joinColumns = @JoinColumn(name = "Fuel_doc_id"))
+    private List<FuelDocCarDetails> fuelDocCarDetails;
 
     public Department getDepartment() {        return department;    }
 
@@ -48,5 +52,13 @@ public class FuelDoc {
 
     public void setFuelDocDetails(List<FuelDocDetails> fuelDocDetails) {
         this.fuelDocDetails = fuelDocDetails;
+    }
+
+    public List<FuelDocCarDetails> getFuelDocCarDetails() {
+        return fuelDocCarDetails;
+    }
+
+    public void setFuelDocCarDetails(List<FuelDocCarDetails> fuelDocCarDetails) {
+        this.fuelDocCarDetails = fuelDocCarDetails;
     }
 }

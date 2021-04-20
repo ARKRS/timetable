@@ -16,6 +16,14 @@ public class EmployeeAdapter extends TypeAdapter<Employee> {
         jsonWriter.value(employee.getFio());
         jsonWriter.name("extcode");
         jsonWriter.value(employee.getExtCode());
+
+        //car data 12.03.2021
+        jsonWriter.name("carmodel");
+        jsonWriter.value(employee.getCarModel());
+        jsonWriter.name("carnumber");
+        jsonWriter.value(employee.getCarNumber());
+        jsonWriter.name("carconsumption");
+        jsonWriter.value(employee.getCarConsumption());
         jsonWriter.endObject();
     }
 

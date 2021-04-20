@@ -12,146 +12,73 @@ public enum EmployeeStatus {
     LATE,           //опоздание
     BUISNESSTRIP,   //командировка
     EMPLOYEESEARCH, //поиск сотрудника
-    REMOTE;         //На удаленке
+    REMOTE,         //На удаленке
+    SICKLEAVE,      //Больничный лист
+    DISMISSED;      //Уволен
 
 
 
     public static EmployeeStatus fromRussian(String s) {
 
-        EmployeeStatus status;
-
         switch (s) {
-            case "Работает":
-                status = WORK;
-                break;
-            case "Неизвестно":
-                status = UNDEF;
-                break;
-            case "Отсутствие (без ув.причины)":
-                status = ABSENT;
-                break;
-            case "Отпросился в течение дня":
-                status = PART_ABSENT;
-                break;
-            case "Выходной":
-                status = DAYOFF;
-                break;
-            case "Отпуск":
-                status = VACATION;
-                break;
-            case "Отпуск без содержания":
-                status = LEAVEWITHOUTPAY;
-                break;
-            case "Опоздание на работу":
-                status = LATE;
-                break;
-            case "Командировка":
-                status = BUISNESSTRIP;
-                break;
-            case "Поиск сотрудника":
-                status = EMPLOYEESEARCH;
-                break;
-            case "Работа на 'Удаленке'":
-                status = REMOTE;
-                break;
-            default:
-                status = UNDEF;
+            case "Работает":                    return WORK;
+            case "Неизвестно":                  return UNDEF;
+            case "Отсутствие (без ув.причины)": return ABSENT;
+            case "Отпросился в течение дня":    return PART_ABSENT;
+            case "Выходной":                    return DAYOFF;
+            case "Отпуск":                      return VACATION;
+            case "Отпуск без содержания":       return LEAVEWITHOUTPAY;
+            case "Опоздание на работу":         return LATE;
+            case "Командировка":                return BUISNESSTRIP;
+            case "Поиск сотрудника":            return EMPLOYEESEARCH;
+            case "Работа на 'Удаленке'":        return REMOTE;
+            case "Больничный":                  return SICKLEAVE;
+            case "Уволен":                      return DISMISSED;
+            default:                            return UNDEF;
         }
-        return status;
     }
 
     @Override
     public String toString() {
 
-        String result;
-
         switch (this) {
-            case WORK:
-                result = "Работает";
-                break;
-            case UNDEF:
-                result = "Неизвестно";
-                break;
-            case ABSENT:
-                result = "Отсутствие (без ув.причины)";
-                break;
-            case PART_ABSENT:
-                result = "Отпросился в течение дня";
-                break;
-            case DAYOFF:
-                result = "Выходной";
-                break;
-            case VACATION:
-                result = "Отпуск";
-                break;
-            case LEAVEWITHOUTPAY:
-                result = "Отпуск без содержания";
-                break;
-            case LATE:
-                result = "Опоздание на работу";
-                break;
-            case BUISNESSTRIP:
-                result = "Командировка";
-                break;
-            case EMPLOYEESEARCH:
-                result ="Поиск сотрудника";
-                break;
-            case REMOTE:
-                result = "Работа на 'Удаленке'";
-                break;
-            default:
-                result = "UNDEFINED";
+            case WORK:              return "Работает";
+            case UNDEF:             return "Неизвестно";
+            case ABSENT:            return "Отсутствие (без ув.причины)";
+            case PART_ABSENT:       return "Отпросился в течение дня";
+            case DAYOFF:            return "Выходной";
+            case VACATION:          return "Отпуск";
+            case LEAVEWITHOUTPAY:   return "Отпуск без содержания";
+            case LATE:              return "Опоздание на работу";
+            case BUISNESSTRIP:      return  "Командировка";
+            case EMPLOYEESEARCH:    return "Поиск сотрудника";
+            case REMOTE:            return "Работа на 'Удаленке'";
+            case SICKLEAVE:         return "Больничный";
+            case DISMISSED:         return "Уволен";
+            default:                return "UNDEFINED";
         }
-
-        return result;
-
     }
 
     public String toShortString(){
-        String result;
 
         switch (this) {
-            case WORK:
-                result = "Р";
-                break;
-            case UNDEF:
-                result = "Н/Д";
-                break;
-            case ABSENT:
-                result = "ОТСУТС.У/П";
-                break;
-            case PART_ABSENT:
-                result = "ОТПРОС.";
-                break;
-            case DAYOFF:
-                result = "ВЫХ";
-                break;
-            case VACATION:
-                result = "ОТПУСК";
-                break;
-            case LEAVEWITHOUTPAY:
-                result = "Б/С";
-                break;
-            case LATE:
-                result = "ОПОЗД";
-                break;
-            case BUISNESSTRIP:
-                result = "КОМ-КА";
-                break;
-            case EMPLOYEESEARCH:
-                result ="ПОИСК.СОТР";
-                break;
-            case REMOTE:
-                result = "УДАЛЕНКА";
-                break;
-
-            default:
-                result = "?";
+            case WORK:              return "Р";
+            case UNDEF:             return "Н/Д";
+            case ABSENT:            return "ОТС";
+            case PART_ABSENT:       return "ОТПРОС.";
+            case DAYOFF:            return "ВЫХ";
+            case VACATION:          return "ОТПУСК";
+            case LEAVEWITHOUTPAY:   return "Б/С";
+            case LATE:              return "ОПОЗД";
+            case BUISNESSTRIP:      return "КОМ-КА";
+            case EMPLOYEESEARCH:    return "ПОИСК.СОТР";
+            case REMOTE:            return "УД-КА";
+            case SICKLEAVE:         return "БОЛЬН";
+            case DISMISSED:         return "Уволен";
+            default:                return "?";
         }
-
-        return result;
-
     }
+
     public String getColor(){
         String result;
 
@@ -169,6 +96,9 @@ public enum EmployeeStatus {
                 result = "baddf6";
                 break;
             case DAYOFF:
+                result = "FF0000";
+                break;
+            case DISMISSED:
                 result = "FF0000";
                 break;
             case VACATION:
@@ -189,7 +119,9 @@ public enum EmployeeStatus {
             case REMOTE:
                 result = "799b4f";
                 break;
-
+            case SICKLEAVE:
+                result = "baddf6";
+                break;
             default:
                 result = "ffffff";
         }

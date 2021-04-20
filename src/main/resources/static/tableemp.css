@@ -20,7 +20,10 @@ table tbody tr td {
     border-radius: 4px;
     background: #c2dda2;
 }
-
+.white{
+    background: white;
+    border-radius: 0px;
+}
 table tbody tr td:hover {
     background: #4CAF50;
     transition-duration: 0.2s;

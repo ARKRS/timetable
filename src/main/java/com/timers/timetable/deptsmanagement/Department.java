@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.timers.timetable.users.User;
 
 import javax.persistence.*;
-import java.math.BigInteger;
-import java.util.*;
 
 @Entity
 public class Department implements Comparable {
@@ -20,12 +18,12 @@ public class Department implements Comparable {
     private String extCode;
 
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "user_id")
     @JsonIgnore
     private User supervisor;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "parent")
     private Department parent;
 
@@ -123,5 +121,6 @@ public class Department implements Comparable {
         }
         return depth;
     }
+
 
 }

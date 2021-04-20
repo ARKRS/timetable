@@ -14,6 +14,11 @@ public interface EmployeeRepo extends CrudRepository<Employee, Long> {
 
 
     List<Employee> findAllByDepartment(Department department);
+    List<Employee> findAllByDepartmentOrderByFio(Department department);
 
     Employee findByExtCodeAndFio(String extCode, String fio);
+
+    Employee findByExtCode(String extCode);
+
+    List<Employee> findAllByCarModelIsNotNullAndCarNumberIsNotNull();
 }
